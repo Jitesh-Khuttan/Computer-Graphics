@@ -1,0 +1,67 @@
+# Project: Computer_Graphics_Dev
+# Makefile created by Dev-C++ 5.11
+
+CPP      = g++.exe
+CC       = gcc.exe
+WINDRES  = windres.exe
+OBJ      = bresenham.o circle.o cohensutherland.o color.o ellipse.o liang.o main.o midpoint.o pattern.o simpleDDA.o symmetricDDA.o thickness.o axis.o ngon.o
+LINKOBJ  = bresenham.o circle.o cohensutherland.o color.o ellipse.o liang.o main.o midpoint.o pattern.o simpleDDA.o symmetricDDA.o thickness.o axis.o ngon.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib32" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc "C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/libglu32.a" "C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/libglut32.a" "C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/libopengl32.a" -m32 -pg
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
+BIN      = Computer_Graphics_Dev.exe
+CXXFLAGS = $(CXXINCS) -m32 -pg -lopengl32  -lglu32 -lglut32
+CFLAGS   = $(INCS) -m32 -pg -lopengl32  -lglu32 -lglut32
+RM       = rm.exe -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+bresenham.o: bresenham.cpp
+	$(CPP) -c bresenham.cpp -o bresenham.o $(CXXFLAGS)
+
+circle.o: circle.cpp
+	$(CPP) -c circle.cpp -o circle.o $(CXXFLAGS)
+
+cohensutherland.o: cohensutherland.cpp
+	$(CPP) -c cohensutherland.cpp -o cohensutherland.o $(CXXFLAGS)
+
+color.o: color.cpp
+	$(CPP) -c color.cpp -o color.o $(CXXFLAGS)
+
+ellipse.o: ellipse.cpp
+	$(CPP) -c ellipse.cpp -o ellipse.o $(CXXFLAGS)
+
+liang.o: liang.cpp
+	$(CPP) -c liang.cpp -o liang.o $(CXXFLAGS)
+
+main.o: main.cpp
+	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
+
+midpoint.o: midpoint.cpp
+	$(CPP) -c midpoint.cpp -o midpoint.o $(CXXFLAGS)
+
+pattern.o: pattern.cpp
+	$(CPP) -c pattern.cpp -o pattern.o $(CXXFLAGS)
+
+simpleDDA.o: simpleDDA.cpp
+	$(CPP) -c simpleDDA.cpp -o simpleDDA.o $(CXXFLAGS)
+
+symmetricDDA.o: symmetricDDA.cpp
+	$(CPP) -c symmetricDDA.cpp -o symmetricDDA.o $(CXXFLAGS)
+
+thickness.o: thickness.cpp
+	$(CPP) -c thickness.cpp -o thickness.o $(CXXFLAGS)
+
+axis.o: axis.cpp
+	$(CPP) -c axis.cpp -o axis.o $(CXXFLAGS)
+
+ngon.o: ngon.cpp
+	$(CPP) -c ngon.cpp -o ngon.o $(CXXFLAGS)
