@@ -34,7 +34,7 @@ bool EllipseObject :: selectObject(pair<int,int> clickedCoordinates)
 	cout<<"Inside Select Object Of Ellipse"<<endl;
 	for(list< pair<int,int> >:: iterator it = coordinates.begin(); it != coordinates.end(); it++)
 	{
-		if( (*it).first == clickedCoordinates.first && (*it).second == clickedCoordinates.second)
+		if(((*it).first >= clickedCoordinates.first -1 && (*it).first <= clickedCoordinates.first + 1 ) && ((*it).second >= clickedCoordinates.second) - 1 && (*it).second <= clickedCoordinates.second+1)
 		{
 			reDrawSelectedObject(Color::NAVYBLUE,thickness+2);
 			return true;

@@ -164,8 +164,14 @@ void display()
 	}
 	else if(currentAlgo >= 31 && currentAlgo <= 35)
 	{
-		seedPoint.first = currentX - width/2;
-    	seedPoint.second = height/2 - currentY;
+		cout<<"\n\tglReadPixel reads from the original pixel";
+		cout<<"\n\tglVertex21 Puts pixel in the shifted coordinates";
+		cout<<"\n\tOriginal Pixel at: ("<<currentX<<","<<currentY<<")";
+		seedPoint.first = currentX;
+		seedPoint.second = currentY;
+//		seedPoint.first = currentX - width/2;
+//    	seedPoint.second = height/2 - currentY;
+    	//cout<<"\n\tPoint at: ("<<seedPoint.first<<","<<seedPoint.second<<")";
     	selectedObject->fillBoundary(seedPoint.first,seedPoint.second,fillColor,Color::NAVYBLUE);
     	glFlush();
 	}

@@ -32,7 +32,7 @@ bool Circle :: selectObject(pair<int,int> clickedCoordinates)
 	cout<<"Inside Select Object Of Circle"<<endl;
 	for(list< pair<int,int> >:: iterator it = coordinates.begin(); it != coordinates.end(); it++)
 	{
-		if( (*it).first == clickedCoordinates.first && (*it).second == clickedCoordinates.second)
+		if(((*it).first >= clickedCoordinates.first - 1 && (*it).first <= clickedCoordinates.first + 1 ) && ((*it).second >= clickedCoordinates.second) - 1 && (*it).second <= clickedCoordinates.second+1)
 		{
 			reDrawSelectedObject(Color::NAVYBLUE,thickness+2);
 			return true;
@@ -142,47 +142,137 @@ void Circle ::scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint)
 	draw(startX + width/2, endX + width/2,height/2 - startY, height/2 - endY,width,height);
 }
 
+//void Circle :: fillBoundary(int x,int y,float* fillColor,float* boundaryColor)
+//{
+//	float interiorColor[3];
+//	//cout<<"Reading Pixel from: "<<
+//	cout<<"\n\tReading Pixel From Original Coordinates: ("<<x <<","<<y<<")";
+//	cout<<"\n\tReading Pixel From Shifted Coordinates: ("<<x - width/2 <<","<<height/2 - y<<")";
+//	glReadPixels(x,y,1,1,GL_RGB,GL_FLOAT,interiorColor);
+//	cout<<"Interior Color R: "<<(interiorColor[0]*10)<<" G: "<<(interiorColor[1]*10)<<" B: "<<(interiorColor[2])*10<<endl;
+//	cout<<"Fill Color Color R: "<<(fillColor[0]*10)<<" G: "<<(fillColor[1]*10)<<" B: "<<(fillColor[2]*10)<<endl;
+//	cout<<"Boundary Color R: "<<(boundaryColor[0]*10)<<" G: "<<(boundaryColor[1]*10)<<" B: "<<(boundaryColor[2]*10)<<endl<<endl;
+//	if(interiorColor[0] == Color::BLACK[0] && interiorColor[1] == Color::BLACK[1] && interiorColor[2] == Color::BLACK[2] )
+//		cout<<"\n\tInterior Color: BLACK";
+//	else if(interiorColor[0] == Color::NAVYBLUE[0] && interiorColor[1] == Color::NAVYBLUE[1] && interiorColor[2] == Color::NAVYBLUE[2])
+//		cout<<"\n\tInterior Color: NAVY";	
+//	
+//	list< pair<int,int> >::iterator it;
+//	for(it = coordinates.begin();it != coordinates.end();it++)
+//	{
+//		if(x - width/2 == (*it).first && height/2 - y == (*it).second)
+//			cout<<"COORDINATESSSSS MATCHEDDDDDD!";
+//	}
+//	
+////	cout<<"Checking: "<<int(interiorColor[0]*10)<<" with "<<int(fillColor[0]*10)<<endl;
+////	if(int(interiorColor[0]*10) != int(fillColor[0]*10))
+////	{
+////		cout<<"Condition 1 True"<<endl;
+////	}
+////	
+////	cout<<"Checking: "<<int(interiorColor[1]*10) <<" with "<<int(fillColor[1]*10)<<endl;
+////	if(int(interiorColor[1]*10) != int(fillColor[1]*10))
+////		cout<<"Condition 2 True"<<endl;
+////	
+////	cout<<"Multiplicaton Result Of"<<interiorColor[2]<<" with "<<10<<" is :"<<interiorColor[2]*10;
+////	cout<<"Checking: "<<(interiorColor[2]*10) <<" with "<< int(fillColor[2]*10)<<endl;
+////	if(int(interiorColor[2]*10) != int(fillColor[2]*10))
+////		cout<<"Condition 3 True"<<endl;
+////	
+////	cout<<"Checking: "<<int(interiorColor[0]*10) <<" with "<< int(boundaryColor[0]*10)<<endl;
+////	if(int(interiorColor[0]*10) != int(boundaryColor[0]*10))
+////		cout<<"Condition 4 True"<<endl;
+////	
+////	cout<<"Checking: "<<int(interiorColor[1]*10) <<" with "<< int(boundaryColor[1]*10)<<endl;
+////	if(int(interiorColor[1]*10) != int(boundaryColor[1]*10))
+////		cout<<"Condition 5 True"<<endl;
+////	
+////	cout<<"Checking: "<<int(interiorColor[2]*10) <<" with "<< int(boundaryColor[2]*10)<<endl;	
+////	if(int(interiorColor[2]*10) != int(boundaryColor[2]*10))
+////		cout<<"Condition 6 True"<<endl;
+//
+//	if((int(interiorColor[0]*10) != int(fillColor[0]*10) || int(interiorColor[1]*10) != int(fillColor[1]*10) || int(interiorColor[2]*10) != int(fillColor[2]*10)) && (int(interiorColor[0]*10) != int(boundaryColor[0]*10) || int(interiorColor[1]*10) != int(boundaryColor[1]*10) || int(interiorColor[2]*10) != int(boundaryColor[2]*10)))
+//	{
+//		glColor3fv(fillColor);
+//		glPointSize(Thickness::THICKNESS1);
+//		glBegin(GL_POINTS);
+//			glVertex2i(x - width/2,height/2 - y);
+//		glEnd();
+//		glFlush();
+//		fillBoundary(x+1,y,fillColor,boundaryColor);
+//		fillBoundary(x-1,y,fillColor,boundaryColor);
+//		fillBoundary(x,y+1,fillColor,boundaryColor);
+//		fillBoundary(x,y-1,fillColor,boundaryColor);
+//	}
+//}
+
 void Circle :: fillBoundary(int x,int y,float* fillColor,float* boundaryColor)
 {
-	float interiorColor[3];
-	glReadPixels(x + width/2,y + height/2,1,1,GL_RGB,GL_FLOAT,interiorColor);
-	cout<<"Interior Color R: "<<float(interiorColor[0])<<" G: "<<float(interiorColor[1]/255.0)<<" B: "<<float(interiorColor[2]/255.0)<<endl;
-	cout<<"Fill Color Color R: "<<float(fillColor[0])<<" G: "<<float(fillColor[1])<<" B: "<<float(fillColor[2])<<endl;
-	cout<<"Boundary Color R: "<<float(boundaryColor[0])<<" G: "<<float(boundaryColor[1])<<" B: "<<float(boundaryColor[2])<<endl<<endl;
+	GLubyte interiorColor[3];
+	GLubyte tempFillColor[3];
+	GLubyte tempBoundaryColor[3];
+	tempFillColor[0] = fillColor[0]*255;
+	tempFillColor[1] = fillColor[1]*255;
+	tempFillColor[2] = fillColor[2]*255;
 	
+	tempBoundaryColor[0] = boundaryColor[0]*255;
+	tempBoundaryColor[1] =  boundaryColor[1]*255;
+	tempBoundaryColor[2] = boundaryColor[2]*255;
 	
-	cout<<"Checking: "<<int(interiorColor[0]*10)<<" with "<<int(fillColor[0]*10)<<endl;
-	if(int(interiorColor[0]*10) != int(fillColor[0]*10))
+	//cout<<"Reading Pixel from: "<<
+	cout<<"\n\tReading Pixel From Original Coordinates: ("<<x <<","<<y<<")";
+	cout<<"\n\tReading Pixel From Shifted Coordinates: ("<<x - width/2 <<","<<height/2 - y<<")";
+	glReadPixels(x,y,1,1,GL_RGB,GL_UNSIGNED_BYTE,interiorColor);
+	cout<<"Interior Color R: "<<int(interiorColor[0])<<" G: "<<int(interiorColor[1])<<" B: "<<int(interiorColor[2])<<endl;
+	cout<<"Fill Color Color R: "<<int(tempFillColor[0])<<" G: "<<int(tempFillColor[1])<<" B: "<<int(tempFillColor[2])<<endl;
+	cout<<"Boundary Color R: "<<int(tempBoundaryColor[0])<<" G: "<<int(tempBoundaryColor[1])<<" B: "<<int(tempBoundaryColor[2])<<endl<<endl;
+	if(interiorColor[0] == Color::BLACK[0] && interiorColor[1] == Color::BLACK[1] && interiorColor[2] == Color::BLACK[2] )
+		cout<<"\n\tInterior Color: BLACK";
+	else if(interiorColor[0] == Color::NAVYBLUE[0] && interiorColor[1] == Color::NAVYBLUE[1] && interiorColor[2] == Color::NAVYBLUE[2])
+		cout<<"\n\tInterior Color: NAVY";	
+	
+	list< pair<int,int> >::iterator it;
+	for(it = coordinates.begin();it != coordinates.end();it++)
 	{
-		cout<<"Condition 1 True"<<endl;
+		if(x - width/2 == (*it).first && height/2 - y == (*it).second)
+			cout<<"COORDINATESSSSS MATCHEDDDDDD!";
 	}
 	
-	cout<<"Checking: "<<int(interiorColor[1]*10) <<" with "<<int(fillColor[1]*10)<<endl;
-	if(int(interiorColor[1]*10) != int(fillColor[1]*10))
-		cout<<"Condition 2 True"<<endl;
-		
-	cout<<"Checking: "<<(interiorColor[2]*10) <<" with "<< int(fillColor[2]*10)<<endl;
-	if(int(interiorColor[2]*10) != int(fillColor[2]*10))
-		cout<<"Condition 3 True"<<endl;
-	
-	cout<<"Checking: "<<int(interiorColor[0]*10) <<" with "<< int(boundaryColor[0]*10)<<endl;
-	if(int(interiorColor[0]*10) != int(boundaryColor[0]*10))
-		cout<<"Condition 4 True"<<endl;
-	
-	cout<<"Checking: "<<int(interiorColor[1]*10) <<" with "<< int(boundaryColor[1]*10)<<endl;
-	if(int(interiorColor[1]*10) != int(boundaryColor[1]*10))
-		cout<<"Condition 5 True"<<endl;
-	
-	cout<<"Checking: "<<int(interiorColor[2]*10) <<" with "<< int(boundaryColor[2]*10)<<endl;	
-	if(int(interiorColor[2]*10) != int(boundaryColor[2]*10))
-		cout<<"Condition 6 True"<<endl;
+//	cout<<"Checking: "<<int(interiorColor[0]*10)<<" with "<<int(fillColor[0]*10)<<endl;
+//	if(int(interiorColor[0]*10) != int(fillColor[0]*10))
+//	{
+//		cout<<"Condition 1 True"<<endl;
+//	}
+//	
+//	cout<<"Checking: "<<int(interiorColor[1]*10) <<" with "<<int(fillColor[1]*10)<<endl;
+//	if(int(interiorColor[1]*10) != int(fillColor[1]*10))
+//		cout<<"Condition 2 True"<<endl;
+//	
+//	cout<<"Multiplicaton Result Of"<<interiorColor[2]<<" with "<<10<<" is :"<<interiorColor[2]*10;
+//	cout<<"Checking: "<<(interiorColor[2]*10) <<" with "<< int(fillColor[2]*10)<<endl;
+//	if(int(interiorColor[2]*10) != int(fillColor[2]*10))
+//		cout<<"Condition 3 True"<<endl;
+//	
+//	cout<<"Checking: "<<int(interiorColor[0]*10) <<" with "<< int(boundaryColor[0]*10)<<endl;
+//	if(int(interiorColor[0]*10) != int(boundaryColor[0]*10))
+//		cout<<"Condition 4 True"<<endl;
+//	
+//	cout<<"Checking: "<<int(interiorColor[1]*10) <<" with "<< int(boundaryColor[1]*10)<<endl;
+//	if(int(interiorColor[1]*10) != int(boundaryColor[1]*10))
+//		cout<<"Condition 5 True"<<endl;
+//	
+//	cout<<"Checking: "<<int(interiorColor[2]*10) <<" with "<< int(boundaryColor[2]*10)<<endl;	
+//	if(int(interiorColor[2]*10) != int(boundaryColor[2]*10))
+//		cout<<"Condition 6 True"<<endl;
 
-	if((int(interiorColor[0]*10) != int(fillColor[0]*10) || int(interiorColor[1]*10) != int(fillColor[1]*10) || int(interiorColor[2]*10) != int(fillColor[2]*10)) && (int(interiorColor[0]*10) != int(boundaryColor[0]*10) || int(interiorColor[1]*10) != int(boundaryColor[1]*10) || int(interiorColor[2]*10) != int(boundaryColor[2]*10)))
+	if((int(interiorColor[0]) != int(tempFillColor[0]) || int(interiorColor[1]) != int(tempFillColor[1]) || int(interiorColor[2]) != int(tempFillColor[2])) || (int(interiorColor[0]) != int(tempBoundaryColor[0]) || int(interiorColor[1]) != int(tempBoundaryColor[1]) || int(interiorColor[2]) != int(tempBoundaryColor[2])))
 	{
 		glColor3fv(fillColor);
+		glPointSize(Thickness::THICKNESS1);
 		glBegin(GL_POINTS);
-			glVertex2i(x,y);
+			glVertex2i(x - width/2,height/2 - y);
 		glEnd();
+		glFlush();
 		fillBoundary(x+1,y,fillColor,boundaryColor);
 		fillBoundary(x-1,y,fillColor,boundaryColor);
 		fillBoundary(x,y+1,fillColor,boundaryColor);
