@@ -21,20 +21,15 @@ SymmetricDDA::SymmetricDDA(float* color,int thickness,string pattern)
 
 void SymmetricDDA :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
 {
-	cout<<"Redrawing Selected SymmetricDDA "<<endl;
+	//cout<<"Redrawing Selected SymmetricDDA "<<endl;
 	glColor3fv(colorToDraw);
 	glPointSize(thicknessToDraw);
 	list< pair<int,int> >:: iterator it;
 	for(it = coordinates.begin(); it!= coordinates.end();it++)
 	{
-		patternIndex = patternIndex%10;
-		if(pattern[patternIndex] == 49)
-		{
-			glBegin(GL_POINTS);
-				glVertex2i((*it).first, (*it).second);
-			glEnd();
-		}
-		patternIndex++;
+		glBegin(GL_POINTS);
+			glVertex2i((*it).first, (*it).second);
+		glEnd();
 	}
 	glFlush();
 }

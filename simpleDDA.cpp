@@ -19,20 +19,15 @@ SimpleDDA :: SimpleDDA(float* color,int thickness,string pattern)
 
 void SimpleDDA :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
 {
-	cout<<"Redrawing Selected SimpleDDA "<<endl;
+	//cout<<"Redrawing Selected SimpleDDA "<<endl;
 	glColor3fv(colorToDraw);
 	glPointSize(thicknessToDraw);
 	list< pair<int,int> >:: iterator it;
 	for(it = coordinates.begin(); it!= coordinates.end();it++)
 	{
-		patternIndex = patternIndex%10;
-		if(pattern[patternIndex] == 49)
-		{
-			glBegin(GL_POINTS);
-				glVertex2i((*it).first, (*it).second);
-			glEnd();
-		}
-		patternIndex++;
+		glBegin(GL_POINTS);
+			glVertex2i((*it).first, (*it).second);
+		glEnd();
 	}
 	glFlush();
 }
@@ -45,12 +40,12 @@ void SimpleDDA::draw(int startX,int endX,int startY,int endY,int width,int heigh
         int maxValue,loop,dx,dy;
 		float C_X,C_Y;
 		pair<int,int> currentCoordinates;
-        cout<<"\n\tReceived: StartX:"<<startX<<" StartY: "<<startY<<" endX:"<<endX<<" endY:"<<endY;
+        //cout<<"\n\tReceived: StartX:"<<startX<<" StartY: "<<startY<<" endX:"<<endX<<" endY:"<<endY;
         startX = startX - width/2;
         startY = height/2 - startY;
         endX = endX - width/2;
         endY = height/2 - endY;
-        cout<<"\n\tConverted: StartX:"<<startX<<" StartY: "<<startY<<" endX:"<<endX<<" endY:"<<endY;
+        //cout<<"\n\tConverted: StartX:"<<startX<<" StartY: "<<startY<<" endX:"<<endX<<" endY:"<<endY;
         
         vertices.clear();
         coordinates.clear();
@@ -66,7 +61,7 @@ void SimpleDDA::draw(int startX,int endX,int startY,int endY,int width,int heigh
            maxValue = abs(maxValue);
         xinc = (GLdouble)dx/maxValue;
         yinc = (GLdouble)dy/maxValue;
-        cout<<"\n\txinc: "<<xinc<<" yinc:"<<yinc;
+        //cout<<"\n\txinc: "<<xinc<<" yinc:"<<yinc;
         C_X = startX;
         C_Y = startY;
 

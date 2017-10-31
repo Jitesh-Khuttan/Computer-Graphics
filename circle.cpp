@@ -20,7 +20,7 @@ Circle ::Circle(float* color,int thickness,string pattern)
 
 void Circle :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
 {
-	cout<<"Redrawing Selected Circle "<<endl;
+	//cout<<"Redrawing Selected Circle "<<endl;
 	glColor3fv(colorToDraw);
 	glPointSize(Thickness::THICKNESS10);
 	if(colorToDraw == Color::BLACK)
@@ -33,14 +33,9 @@ void Circle :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
 	list< pair<int,int> >:: iterator it;
 	for(it = coordinates.begin(); it!= coordinates.end();it++)
 	{
-		patternIndex = patternIndex%10;
-		if(pattern[patternIndex] == 49)
-		{
-			glBegin(GL_POINTS);
-				glVertex2i((*it).first, (*it).second);
-			glEnd();
-		}
-		patternIndex++;
+		glBegin(GL_POINTS);
+			glVertex2i((*it).first, (*it).second);
+		glEnd();
 	}
 	glFlush();
 }
@@ -217,8 +212,8 @@ void Circle::draw(int startX,int endX,int startY,int endY,int width,int height)
     endX = endX - width/2;
     endY = height/2 - endY;
     
-    cout<<"\n\tStartX,StartY:("<<startX<<","<<startY<<")";
-    cout<<"\n\endX,endY:("<<endX<<","<<endY<<")";
+//    cout<<"\n\tStartX,StartY:("<<startX<<","<<startY<<")";
+//    cout<<"\n\endX,endY:("<<endX<<","<<endY<<")";
     
     vertices.clear();
     coordinates.clear();
@@ -226,7 +221,7 @@ void Circle::draw(int startX,int endX,int startY,int endY,int width,int height)
     vertices.push_back(make_pair(endX,endY));
 
     radius = sqrt((endX-startX)*(endX-startX) + (endY - startY)*(endY - startY));
-    cout<<"\n\tRadius: "<<radius<<endl;
+    //cout<<"\n\tRadius: "<<radius<<endl;
 	decision_parameter = 1 - radius;
 
 	Xc = startX;

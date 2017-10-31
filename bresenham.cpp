@@ -19,7 +19,7 @@ Bresenham :: Bresenham(float* color,int thickness,string pattern)
 
 void Bresenham :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
 {
-	cout<<"Redrawing Selected Bresenham "<<endl;
+	//cout<<"Redrawing Selected Bresenham "<<endl;
 	glPointSize(thicknessToDraw);
 	glColor3fv(colorToDraw);
 	list< pair<int,int> >:: iterator it;
@@ -154,7 +154,7 @@ void Bresenham:: BslopeGT1(int steps, int x, int y, int dx, int dy,int startX,in
 
 void Bresenham ::draw(int startX,int endX,int startY,int endY,int width,int height)
 {
-	cout<<"inside bresenham drawing"<<endl;
+	//cout<<"inside bresenham drawing"<<endl;
     pair<int,int> currentCoordinates;
 	float dx, dy;
 	int x, y, steps;

@@ -19,20 +19,15 @@ MidPoint :: MidPoint(float* color,int thickness,string pattern)
 
 void MidPoint :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
 {
-	cout<<"Redrawing Selected MidPoint "<<endl;
+	//cout<<"Redrawing Selected MidPoint "<<endl;
 	glColor3fv(colorToDraw);
 	glPointSize(thicknessToDraw);
 	list< pair<int,int> >:: iterator it;
 	for(it = coordinates.begin(); it!= coordinates.end();it++)
 	{
-		patternIndex = patternIndex%10;
-		if(pattern[patternIndex] == 49)
-		{
-			glBegin(GL_POINTS);
-				glVertex2i((*it).first, (*it).second);
-			glEnd();
-		}
-		patternIndex++;
+		glBegin(GL_POINTS);
+			glVertex2i((*it).first, (*it).second);
+		glEnd();
 	}
 	glFlush();
 }

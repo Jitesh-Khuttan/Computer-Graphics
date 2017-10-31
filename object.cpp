@@ -22,6 +22,29 @@ void Object :: setThickness(int thickness)
     this->thickness = thickness;
 }
 
+bool Object :: selectObject(pair<int,int> clickedCoordinates)
+{
+	//cout<<"Inside Select Object Of MidPoint"<<endl;
+	for(list< pair<int,int> >:: iterator it = coordinates.begin(); it != coordinates.end(); it++)
+	{
+		if(((*it).first + 2 >= clickedCoordinates.first  && (*it).first -2 <= clickedCoordinates.first ) && ((*it).second + 2 >= clickedCoordinates.second)  && (*it).second -2 <= clickedCoordinates.second)
+		{
+			reDrawSelectedObject(Color::NAVYBLUE,thickness+2);
+			return true;
+		}
+	}
+	return false;
+}
+
+void Object :: printCoordinates()
+{
+	list< pair<int,int> > :: iterator it;
+	for(it = coordinates.begin(); it != coordinates.end();it++)
+	{
+		cout<<"\n\tCoordinates: ("<<(*it).first<<","<<(*it).second<<")"<<endl;
+	}
+}
+
 
 void Object :: translateObject(int dx,int dy)
 {
@@ -207,25 +230,3 @@ void Object :: scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint)
 	}	
 }
 
-bool Object :: selectObject(pair<int,int> clickedCoordinates)
-{
-	cout<<"Inside Select Object Of MidPoint"<<endl;
-	for(list< pair<int,int> >:: iterator it = coordinates.begin(); it != coordinates.end(); it++)
-	{
-		if(((*it).first + 1 >= clickedCoordinates.first  && (*it).first -1 <= clickedCoordinates.first ) && ((*it).second + 1 >= clickedCoordinates.second)  && (*it).second -1 <= clickedCoordinates.second)
-		{
-			reDrawSelectedObject(Color::NAVYBLUE,thickness+2);
-			return true;
-		}
-	}
-	return false;
-}
-
-void Object :: printCoordinates()
-{
-	list< pair<int,int> > :: iterator it;
-	for(it = coordinates.begin(); it != coordinates.end();it++)
-	{
-		cout<<"\n\tCoordinates: ("<<(*it).first<<","<<(*it).second<<")"<<endl;
-	}
-}

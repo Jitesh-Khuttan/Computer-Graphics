@@ -22,7 +22,7 @@ EllipseObject:: EllipseObject(float* color,int thickness,string pattern)
 
 void EllipseObject :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
 {
-	cout<<"Redrawing Selected Ellipse "<<endl;
+	//cout<<"Redrawing Selected Ellipse "<<endl;
 	glColor3fv(colorToDraw);
 	glPointSize(Thickness::THICKNESS10);
 	if(colorToDraw == Color::BLACK)
@@ -36,14 +36,9 @@ void EllipseObject :: reDrawSelectedObject(float* colorToDraw,int thicknessToDra
 	list< pair<int,int> >:: iterator it;
 	for(it = coordinates.begin(); it!= coordinates.end();it++)
 	{
-		patternIndex = patternIndex%10;
-		if(pattern[patternIndex] == 49)
-		{
-			glBegin(GL_POINTS);
-				glVertex2i((*it).first, (*it).second);
-			glEnd();
-		}
-		patternIndex++;
+		glBegin(GL_POINTS);
+			glVertex2i((*it).first, (*it).second);
+		glEnd();
 	}
 	glFlush();
 }
@@ -149,10 +144,10 @@ void EllipseObject::draw(int startX,int endX,int startY,int endY,int width,int h
 	this->endX = endX;
 	this->endY = endY; 
 
-    cout<<"Center X: "<<Xc<<endl;
-    cout<<"Center Y: "<<Yc<<endl;
-    cout<<"Rx: "<<Rx<<endl;
-    cout<<"Ry: "<<Ry<<endl;
+//    cout<<"Center X: "<<Xc<<endl;
+//    cout<<"Center Y: "<<Yc<<endl;
+//    cout<<"Rx: "<<Rx<<endl;
+//    cout<<"Ry: "<<Ry<<endl;
 
 
     Rx_square = Rx*Rx;
