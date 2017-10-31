@@ -20,30 +20,6 @@ EllipseObject:: EllipseObject(float* color,int thickness,string pattern)
     this->objectName = "Ellipse";
 }
 
-void EllipseObject :: printCoordinates()
-{
-	list< pair<int,int> > :: iterator it;
-	for(it = coordinates.begin(); it != coordinates.end();it++)
-	{
-		cout<<"\n\tCoordinates: ("<<(*it).first<<","<<(*it).second<<")"<<endl;
-	}
-}
-
-bool EllipseObject :: selectObject(pair<int,int> clickedCoordinates)
-{
-	cout<<"Inside Select Object Of Ellipse"<<endl;
-	for(list< pair<int,int> >:: iterator it = coordinates.begin(); it != coordinates.end(); it++)
-	{
-		if(((*it).first >= clickedCoordinates.first -1 && (*it).first <= clickedCoordinates.first + 1 ) && ((*it).second >= clickedCoordinates.second) - 1 && (*it).second <= clickedCoordinates.second+1)
-		{
-			reDrawSelectedObject(Color::NAVYBLUE,thickness+2);
-			return true;
-		}
-	}
-	return false;
-}
-
-
 void EllipseObject :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
 {
 	cout<<"Redrawing Selected Ellipse "<<endl;
@@ -71,102 +47,6 @@ void EllipseObject :: reDrawSelectedObject(float* colorToDraw,int thicknessToDra
 	}
 	glFlush();
 }
-
-
-void EllipseObject :: translateObject(int dx,int dy)
-{
-	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
-	Axis::drawAxis();
-	
-	list< pair<int,int> >:: iterator it;
-	for(it = vertices.begin(); it!= vertices.end();it++)
-	{
-		(*it).first += dx;
-		(*it).second += dy;
-	}
-	
-	int startX,startY,endX,endY;
-	int counter = 1;
-
-	for(it = vertices.begin(); it!= vertices.end();it++)
-	{
-		if(counter == 1)
-		{
-			startX = (*it).first;
-			startY = (*it).second;
-		}
-		else if(counter == 2)
-		{
-			endX =(*it).first;
-			endY = (*it).second;
-		}
-		counter++;
-	}
-	draw(startX + width/2, endX + width/2,height/2 - startY, height/2 - endY,width,height);
-
-	list<Object*>:: iterator i;
-	for(i = allObjects.begin(); i!= allObjects.end();i++)
-	{
-		(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
-	}
-}
-void EllipseObject ::setColor(float* color)
-{
-    this->color = color;
-}
-
-void EllipseObject ::setPattern(string pattern)
-{
-    this->pattern = pattern;
-}
-
-void EllipseObject :: setThickness(int thickness)
-{
-    this->thickness = thickness;
-}
-
-
-void EllipseObject ::rotateObject(int rotationAngle,pair<int,int> pivotPoint) 
-{
-	int tempx,tempy;
-	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
-	Axis::drawAxis();
-
-	list< pair<int,int> >:: iterator it;
-	for(it = coordinates.begin(); it!= coordinates.end();it++)
-	{
-		tempx = (*it).first;
-		tempy = (*it).second;
-		(*it).first = pivotPoint.first + (tempx - pivotPoint.first)*cos(rotationAngle*3.14159/180) - (tempy - pivotPoint.second)*sin(rotationAngle*3.14159/180);
-		(*it).second = pivotPoint.second + (tempx - pivotPoint.first)*sin(rotationAngle*3.14159/180) + (tempy - pivotPoint.second)*cos(rotationAngle*3.14159/180);
-	}
-
-	list<Object*>:: iterator i;
-	for(i = allObjects.begin(); i!= allObjects.end();i++)
-	{
-		(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
-	}
-}
-
-
-void EllipseObject ::scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint)
-{
-	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
-	Axis::drawAxis();
-	list< pair<int,int> > :: iterator it;
-	for(it = coordinates.begin(); it!= coordinates.end();it++)
-	{
-		(*it).first += (*it).first * scaleValue.first + pivotPoint.first * (1 - scaleValue.first);
-		(*it).second += (*it).second * scaleValue.second + pivotPoint.second * (1 - scaleValue.second);
-	}
-	list<Object*>:: iterator i;
-	for(i = allObjects.begin(); i!= allObjects.end();i++)
-	{
-		(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
-	}
-}
-
-
 
 void EllipseObject::clipPointsOfEllipse(int X,int Y)
 {

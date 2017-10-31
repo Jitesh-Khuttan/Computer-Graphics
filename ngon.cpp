@@ -19,29 +19,6 @@ Ngon ::Ngon(float* color,int thickness,string pattern)
     this->objectName = "Circle";
 }
 
-void Ngon :: printCoordinates()
-{
-	list< pair<int,int> > :: iterator it;
-	for(it = coordinates.begin(); it != coordinates.end();it++)
-	{
-		cout<<"\n\tCoordinates: ("<<(*it).first<<","<<(*it).second<<")"<<endl;
-	}
-}
-
-bool Ngon :: selectObject(pair<int,int> clickedCoordinates)
-{
-	cout<<"Inside Select Object Of Circle"<<endl;
-	for(list< pair<int,int> >:: iterator it = coordinates.begin(); it != coordinates.end(); it++)
-	{
-		if( (*it).first == clickedCoordinates.first && (*it).second == clickedCoordinates.second)
-		{
-			reDrawSelectedObject(Color::NAVYBLUE,thickness+2);
-			return true;
-		}
-	}
-	return false;
-}
-
 
 void Ngon :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
 {
@@ -71,63 +48,6 @@ void Ngon :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
 }
 
 
-void Ngon :: translateObject(int dx,int dy)
-{
-	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
-	Axis::drawAxis();
-	
-	list< pair<int,int> >:: iterator it;
-	for(it = coordinates.begin(); it!= coordinates.end();it++)
-	{
-		(*it).first += dx;
-		(*it).second += dy;
-	}
-
-	list<Object*>:: iterator i;
-	for(i = allObjects.begin(); i!= allObjects.end();i++)
-	{
-		(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
-	}
-}
-
-
-void Ngon ::rotateObject(int rotationAngle,pair<int,int> pivotPoint) 
-{
-	int tempx,tempy;
-	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
-	Axis::drawAxis();
-	
-	list< pair<int,int> >:: iterator it;
-	for(it = coordinates.begin(); it!= coordinates.end();it++)
-	{
-		tempx = (*it).first;
-		tempy = (*it).second;
-		(*it).first = pivotPoint.first + (tempx - pivotPoint.first)*cos(rotationAngle*3.14159/180) - (tempy - pivotPoint.second)*sin(rotationAngle*3.14159/180);
-		(*it).second = pivotPoint.second + (tempx - pivotPoint.first)*sin(rotationAngle*3.14159/180) + (tempy - pivotPoint.second)*cos(rotationAngle*3.14159/180);
-	}
-
-	list<Object*>:: iterator i;
-	for(i = allObjects.begin(); i!= allObjects.end();i++)
-	{
-		(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
-	}
-}
-
-
-void Ngon ::setColor(float* color)
-{
-    this->color = color;
-}
-
-void Ngon ::setPattern(string pattern)
-{
-    this->pattern = pattern;
-}
-
-void Ngon :: setThickness(int thickness)
-{
-    this->thickness = thickness;
-}
 
 void Ngon :: setVertices(int vertices)
 {

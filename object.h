@@ -17,17 +17,17 @@ public:
     int patternIndex;
     string objectName;
 
-    virtual void draw(int startX,int endX,int startY,int endY,int width,int height) = 0;
-    virtual void translateObject(int,int) = 0;
-    virtual void rotateObject(int rotationAngle,pair<int,int> pivotPoint) = 0;
-    virtual void setPattern(string pattern) = 0;
-    virtual void setThickness(int thickness) = 0;
-    virtual void setColor(float *color) = 0;
-    virtual void printCoordinates() = 0;
-    virtual bool selectObject(pair<int,int>) = 0;
-    virtual void reDrawSelectedObject(float*,int) = 0;
-    virtual void scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint) = 0;
+    void translateObject(int,int);
+    void rotateObject(int rotationAngle,pair<int,int> pivotPoint);
+    void setPattern(string pattern);
+    void setThickness(int thickness);
+    void setColor(float *color);
+	void printCoordinates();
+    bool selectObject(pair<int,int>);
+    void scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint);
     virtual void fillBoundary(int x,int y,float* fillColor,float* selectedObject) {}
+    virtual void draw(int startX,int endX,int startY,int endY,int width,int height) = 0;
+    virtual void reDrawSelectedObject(float*,int) = 0;
 };
 
 #endif // OBJECT

@@ -126,7 +126,7 @@ void display()
   	bool result;
   	if(currentAlgo == 8)
   	{
-  		cout<<"Inside Currenlt Algo = 8"<<endl;
+  		cout<<"Inside Current Algo = 8"<<endl;
   		selectedCoordinates.first = currentX - width/2;
     	selectedCoordinates.second = height/2 - currentY;
     	
@@ -159,6 +159,7 @@ void display()
 		dx = translateCoordinates.first - selectedCoordinates.first;
 		dy = translateCoordinates.second - selectedCoordinates.second;
 		selectedObject->thickness = CURRENTTHICKNESS;
+		selectedObject->color = CURRENTCOLOR;
 		selectedObject->translateObject(dx,dy);
 	}
 	else if(currentAlgo == 10)
@@ -184,6 +185,7 @@ void display()
 		currentAlgo = 0;
 		clickCount = 0;
 		selectedObject->thickness = CURRENTTHICKNESS;
+		selectedObject->color = CURRENTCOLOR;
 		selectedObject->rotateObject(rotationAngle,pivotPoint);
 	}
 	else if(currentAlgo >= 59 && currentAlgo <= 61 )
@@ -191,6 +193,7 @@ void display()
 		currentAlgo = 0;
 		clickCount = 0;
 		selectedObject->thickness = CURRENTTHICKNESS;
+		selectedObject->color = CURRENTCOLOR;
 		selectedObject->scaleObject(scalingValue,pivotPoint);
 	}
 	
@@ -208,8 +211,9 @@ void display()
 				}
 				else
 				{
-                    cout<<"Drawing a simple Line"<<endl;
+                    
                     SimpleDDA *simpleLine = new SimpleDDA(CURRENTCOLOR,CURRENTTHICKNESS,CURRENTPATTERN);
+                    cout<<"Drawing a simple Line"<<endl;
                     simpleLine->draw(startX,endX,startY,endY,width,height);
                     allObjects.push_back(simpleLine);
                 }

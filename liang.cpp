@@ -186,24 +186,28 @@ void Liang::clipLineLiang(int startX,int endX,int startY,int endY,int width,int 
 	if(algoType == 1)
     {
         SimpleDDA *simpleLine = new SimpleDDA(CURRENTCOLOR,CURRENTTHICKNESS,CURRENTPATTERN);
+        cout<<"\n\tAlgo:1 Calling SimpleDDA";
         simpleLine->draw(startX + width/2, endX + width/2,height/2 - startY, height/2 - endY,width,height);
         allObjects.push_back(simpleLine);
     }
     else if(algoType == 2)
     {
         SymmetricDDA *symmetricLine = new SymmetricDDA(CURRENTCOLOR,CURRENTTHICKNESS,CURRENTPATTERN);
+        cout<<"\n\tAlgo:2 Calling Symmetric";
         symmetricLine->draw(startX + width/2, endX + width/2,height/2 - startY, height/2 - endY,width,height);
         allObjects.push_back(symmetricLine);
     }
     else if(algoType == 3)
     {
         Bresenham *bresenhamLine = new Bresenham(CURRENTCOLOR,CURRENTTHICKNESS,CURRENTPATTERN);
+        cout<<"\n\tAlgo:3 Calling Bresenham";
         bresenhamLine->draw(startX + width/2, endX + width/2,height/2 - startY, height/2 - endY,width,height);
         allObjects.push_back(bresenhamLine);
     }
     else if(algoType == 4)
     {
         MidPoint *midLine = new MidPoint(CURRENTCOLOR,CURRENTTHICKNESS,CURRENTPATTERN);
+        cout<<"\n\tAlgo:4 Calling midLine";
         midLine->draw(startX + width/2, endX + width/2,height/2 - startY, height/2 - endY,width,height);
         allObjects.push_back(midLine);
     }
