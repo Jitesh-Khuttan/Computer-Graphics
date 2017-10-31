@@ -133,6 +133,7 @@ void display()
     	cout<<"Selected Coordinates: ("<<selectedCoordinates.first<<","<<selectedCoordinates.second<<")"<<endl;
     	
   		list<Object*>::iterator it;
+  		int counter = 0;
   		for(it = allObjects.begin();it != allObjects.end(); it++)
   		{
   			result = (*it)->selectObject(selectedCoordinates);
@@ -140,8 +141,11 @@ void display()
   			if(result)
   			{
   				selectedObject = *it;
+  				cout<<"\n\tSelected Object: "<<selectedObject->objectName;
+  				cout<<"\n\tObject Number: "<<counter;
 				break;	
 			}
+			counter++;
 		}
 	}
 	

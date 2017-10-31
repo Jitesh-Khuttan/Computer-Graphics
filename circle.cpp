@@ -76,11 +76,30 @@ void Circle :: translateObject(int dx,int dy)
 	Axis::drawAxis();
 	
 	list< pair<int,int> >:: iterator it;
-	for(it = coordinates.begin(); it!= coordinates.end();it++)
+	for(it = vertices.begin(); it!= vertices.end();it++)
 	{
 		(*it).first += dx;
 		(*it).second += dy;
 	}
+	
+	int startX,startY,endX,endY;
+	int counter = 1;
+
+	for(it = vertices.begin(); it!= vertices.end();it++)
+	{
+		if(counter == 1)
+		{
+			startX = (*it).first;
+			startY = (*it).second;
+		}
+		else if(counter == 2)
+		{
+			endX =(*it).first;
+			endY = (*it).second;
+		}
+		counter++;
+	}
+	draw(startX + width/2, endX + width/2,height/2 - startY, height/2 - endY,width,height);
 
 	list<Object*>:: iterator i;
 	for(i = allObjects.begin(); i!= allObjects.end();i++)
@@ -95,15 +114,34 @@ void Circle ::rotateObject(int rotationAngle,pair<int,int> pivotPoint)
 	int tempx,tempy;
 	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
 	Axis::drawAxis();
-	
+
 	list< pair<int,int> >:: iterator it;
-	for(it = coordinates.begin(); it!= coordinates.end();it++)
+	for(it = vertices.begin(); it!= vertices.end();it++)
 	{
 		tempx = (*it).first;
 		tempy = (*it).second;
 		(*it).first = pivotPoint.first + (tempx - pivotPoint.first)*cos(rotationAngle*3.14159/180) - (tempy - pivotPoint.second)*sin(rotationAngle*3.14159/180);
 		(*it).second = pivotPoint.second + (tempx - pivotPoint.first)*sin(rotationAngle*3.14159/180) + (tempy - pivotPoint.second)*cos(rotationAngle*3.14159/180);
 	}
+	
+	int startX,startY,endX,endY;
+	int counter = 1;
+
+	for(it = vertices.begin(); it!= vertices.end();it++)
+	{
+		if(counter == 1)
+		{
+			startX = (*it).first;
+			startY = (*it).second;
+		}
+		else if(counter == 2)
+		{
+			endX =(*it).first;
+			endY = (*it).second;
+		}
+		counter++;
+	}
+	draw(startX + width/2, endX + width/2,height/2 - startY, height/2 - endY,width,height);
 
 	list<Object*>:: iterator i;
 	for(i = allObjects.begin(); i!= allObjects.end();i++)
@@ -114,11 +152,13 @@ void Circle ::rotateObject(int rotationAngle,pair<int,int> pivotPoint)
 
 void Circle ::scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint)
 {
+	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
+	Axis::drawAxis();
 	list< pair<int,int> > :: iterator it;
 	for(it = vertices.begin(); it!= vertices.end();it++)
 	{
-				(*it).first += (*it).first * scaleValue.first + pivotPoint.first * (1 - scaleValue.first);
-				(*it).second += (*it).second * scaleValue.second + pivotPoint.second * (1 - scaleValue.second);
+		(*it).first += (*it).first * scaleValue.first + pivotPoint.first * (1 - scaleValue.first);
+		(*it).second += (*it).second * scaleValue.second + pivotPoint.second * (1 - scaleValue.second);
 	}
 	int startX,startY,endX,endY;
 	int counter = 1;
@@ -137,9 +177,13 @@ void Circle ::scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint)
 		}
 		counter++;
 	}
-	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
-	Axis::drawAxis();
 	draw(startX + width/2, endX + width/2,height/2 - startY, height/2 - endY,width,height);
+	
+	list<Object*>:: iterator i;
+	for(i = allObjects.begin(); i!= allObjects.end();i++)
+	{
+		(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
+	}
 }
 
 //void Circle :: fillBoundary(int x,int y,float* fillColor,float* boundaryColor)
@@ -391,12 +435,16 @@ void Circle::draw(int startX,int endX,int startY,int endY,int width,int height)
     endX = endX - width/2;
     endY = height/2 - endY;
     
+    cout<<"\n\tStartX,StartY:("<<startX<<","<<startY<<")";
+    cout<<"\n\endX,endY:("<<endX<<","<<endY<<")";
+    
     vertices.clear();
-    vertices.push_back(pair<int,int>(startX,startY));
-    vertices.push_back(pair<int,int>(endX,endY));
+    coordinates.clear();
+    vertices.push_back(make_pair(startX,startY));
+    vertices.push_back(make_pair(endX,endY));
 
     radius = sqrt((endX-startX)*(endX-startX) + (endY - startY)*(endY - startY));
-    //cout<<"\n\tRadius: "<<radius<<endl;
+    cout<<"\n\tRadius: "<<radius<<endl;
 	decision_parameter = 1 - radius;
 
 	Xc = startX;
