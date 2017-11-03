@@ -4,6 +4,7 @@
 #include "thickness.h"
 #include "pattern.h"
 #include "circle.h"
+#include "ellipse.h"
 
 extern list<Object*> allObjects;
 extern int width,height;
@@ -62,11 +63,14 @@ void Object :: translateObject(int dx,int dy)
 		}
 		if(objectName == "Circle")
 		{
-			((Circle*)this)->rePaintFilledCoordinates();
-			for(it = ((Circle*)this)->filledCoordinates.begin(); it!= ((Circle*)this)->filledCoordinates.end();it++)	//Downcasting for accessing filledCoordinates
+			if(((Circle*)this)->filled)
 			{
-				(*it).first += dx;
-				(*it).second += dy;
+				((Circle*)this)->rePaintFilledCoordinates();
+				for(it = ((Circle*)this)->filledCoordinates.begin(); it!= ((Circle*)this)->filledCoordinates.end();it++)	//Downcasting for accessing filledCoordinates
+				{
+					(*it).first += dx;
+					(*it).second += dy;
+				}
 			}
 		}
 		
@@ -95,7 +99,7 @@ void Object :: translateObject(int dx,int dy)
 			(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
 		}
 	}
-	else
+	else		//For Ellipse
 	{
 		reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
 		Axis::drawAxis();
@@ -106,7 +110,16 @@ void Object :: translateObject(int dx,int dy)
 			(*it).first += dx;
 			(*it).second += dy;
 		}
-	
+		
+		if(((EllipseObject*)this)->filled)
+		{
+			((EllipseObject*)this)->rePaintFilledCoordinates();
+			for(it = ((EllipseObject*)this)->filledCoordinates.begin(); it!= ((EllipseObject*)this)->filledCoordinates.end();it++)	//Downcasting for accessing filledCoordinates
+			{
+				(*it).first += dx;
+				(*it).second += dy;
+			}
+		}
 		list<Object*>:: iterator i;
 		for(i = allObjects.begin(); i!= allObjects.end();i++)
 		{
@@ -134,13 +147,16 @@ void Object :: rotateObject(int rotationAngle,pair<int,int> pivotPoint)
 		
 		if(objectName == "Circle")
 		{
-			((Circle*)this)->rePaintFilledCoordinates();
-			for(it = ((Circle*)this)->filledCoordinates.begin(); it!= ((Circle*)this)->filledCoordinates.end();it++)	//Downcasting for accessing filledCoordinates
+			if(((Circle*)this)->filled)
 			{
-				tempx = (*it).first;
-				tempy = (*it).second;
-				(*it).first = pivotPoint.first + (tempx - pivotPoint.first)*cos(rotationAngle*3.14159/180) - (tempy - pivotPoint.second)*sin(rotationAngle*3.14159/180);
-				(*it).second = pivotPoint.second + (tempx - pivotPoint.first)*sin(rotationAngle*3.14159/180) + (tempy - pivotPoint.second)*cos(rotationAngle*3.14159/180);
+				((Circle*)this)->rePaintFilledCoordinates();
+				for(it = ((Circle*)this)->filledCoordinates.begin(); it!= ((Circle*)this)->filledCoordinates.end();it++)	//Downcasting for accessing filledCoordinates
+				{
+					tempx = (*it).first;
+					tempy = (*it).second;
+					(*it).first = pivotPoint.first + (tempx - pivotPoint.first)*cos(rotationAngle*3.14159/180) - (tempy - pivotPoint.second)*sin(rotationAngle*3.14159/180);
+					(*it).second = pivotPoint.second + (tempx - pivotPoint.first)*sin(rotationAngle*3.14159/180) + (tempy - pivotPoint.second)*cos(rotationAngle*3.14159/180);
+				}
 			}
 		}
 		
@@ -169,7 +185,7 @@ void Object :: rotateObject(int rotationAngle,pair<int,int> pivotPoint)
 			(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
 		}
 	}
-	else
+	else		//For Ellipse
 	{
 		int tempx,tempy;
 		reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
@@ -182,6 +198,18 @@ void Object :: rotateObject(int rotationAngle,pair<int,int> pivotPoint)
 			tempy = (*it).second;
 			(*it).first = pivotPoint.first + (tempx - pivotPoint.first)*cos(rotationAngle*3.14159/180) - (tempy - pivotPoint.second)*sin(rotationAngle*3.14159/180);
 			(*it).second = pivotPoint.second + (tempx - pivotPoint.first)*sin(rotationAngle*3.14159/180) + (tempy - pivotPoint.second)*cos(rotationAngle*3.14159/180);
+		}
+		
+		if(((EllipseObject*)this)->filled)
+		{
+			((EllipseObject*)this)->rePaintFilledCoordinates();
+			for(it = ((EllipseObject*)this)->filledCoordinates.begin(); it!= ((EllipseObject*)this)->filledCoordinates.end();it++)	//Downcasting for accessing filledCoordinates
+			{
+				tempx = (*it).first;
+				tempy = (*it).second;
+				(*it).first = pivotPoint.first + (tempx - pivotPoint.first)*cos(rotationAngle*3.14159/180) - (tempy - pivotPoint.second)*sin(rotationAngle*3.14159/180);
+				(*it).second = pivotPoint.second + (tempx - pivotPoint.first)*sin(rotationAngle*3.14159/180) + (tempy - pivotPoint.second)*cos(rotationAngle*3.14159/180);
+			}
 		}
 	
 		list<Object*>:: iterator i;

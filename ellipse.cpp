@@ -40,7 +40,70 @@ void EllipseObject :: reDrawSelectedObject(GLubyte* colorToDraw,int thicknessToD
 			glVertex2i((*it).first, (*it).second);
 		glEnd();
 	}
+	
+	if(filled)
+	{
+		if(colorToDraw != Color::NAVYBLUE)
+			glColor3ubv(this->fillColor);
+		for(it = filledCoordinates.begin(); it!= filledCoordinates.end();it++)
+		{
+			glBegin(GL_POINTS);
+				glVertex2i((*it).first, (*it).second);
+			glEnd();
+		}	
+	}
 	glFlush();
+}
+
+void EllipseObject :: rePaintFilledCoordinates()
+{
+	list< pair<int,int> > :: iterator it;
+	glColor3ubv(Color::BLACK);
+	for(it = filledCoordinates.begin(); it!= filledCoordinates.end();it++)
+	{
+		glBegin(GL_POINTS);
+			glVertex2i((*it).first, (*it).second);
+		glEnd();
+	}
+}
+
+
+void EllipseObject :: fillBoundary(int x,int y,GLubyte* fillColor,GLubyte* boundaryColor)
+{
+	this->fillColor = fillColor;
+	filled = true;
+	fillEllipse(x,y,fillColor,boundaryColor);
+	
+	reDrawSelectedObject(Color::BLACK,this->thickness+2);
+	reDrawSelectedObject(this->color,this->thickness);
+	//Redrawing the objects to the screen
+	list<Object*>:: iterator i;
+	for(i = allObjects.begin(); i!= allObjects.end();i++)
+	{
+		if(*i != this)
+			(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
+	}
+}
+
+void EllipseObject :: fillEllipse(int x,int y,GLubyte* fillColor,GLubyte* boundaryColor)
+{
+	GLubyte interiorColor[3];
+	glReadPixels(x,height - y,1,1,GL_RGB,GL_UNSIGNED_BYTE,interiorColor);
+
+	if((interiorColor[0] != fillColor[0] || interiorColor[1] != fillColor[1] || interiorColor[2] != fillColor[2]) && (interiorColor[0] != boundaryColor[0] || interiorColor[1] != boundaryColor[1] || interiorColor[2] != boundaryColor[2]))
+	{
+		glColor3ubv(fillColor);
+		glPointSize(Thickness::THICKNESS1);
+		glBegin(GL_POINTS);
+			glVertex2i(x - width/2,height/2 - y);
+			filledCoordinates.push_back(make_pair(x-width/2,height/2 - y));
+		glEnd();
+		glFlush();
+		fillEllipse(x+1,y,fillColor,boundaryColor);
+		fillEllipse(x-1,y,fillColor,boundaryColor);
+		fillEllipse(x,y+1,fillColor,boundaryColor);
+		fillEllipse(x,y-1,fillColor,boundaryColor);
+	}
 }
 
 void EllipseObject::clipPointsOfEllipse(int X,int Y)

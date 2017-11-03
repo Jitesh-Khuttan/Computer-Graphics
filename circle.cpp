@@ -64,6 +64,8 @@ void Circle :: rePaintFilledCoordinates()
 		glEnd();
 	}
 }
+
+
 void Circle :: fillBoundary(int x,int y,GLubyte* fillColor,GLubyte* boundaryColor)
 {
 	this->fillColor = fillColor;
