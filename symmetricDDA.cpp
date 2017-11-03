@@ -10,7 +10,7 @@ extern int width,height;
 pair<int,int> currentCoordinates;
 
 
-SymmetricDDA::SymmetricDDA(float* color,int thickness,string pattern)
+SymmetricDDA::SymmetricDDA(GLubyte* color,int thickness,string pattern)
 {
     this->color = color;
     this->thickness = thickness;
@@ -19,10 +19,10 @@ SymmetricDDA::SymmetricDDA(float* color,int thickness,string pattern)
     this->objectName = "Symmetric Line";
 }
 
-void SymmetricDDA :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
+void SymmetricDDA :: reDrawSelectedObject(GLubyte* colorToDraw,int thicknessToDraw)
 {
 	//cout<<"Redrawing Selected SymmetricDDA "<<endl;
-	glColor3fv(colorToDraw);
+	glColor3ubv(colorToDraw);
 	glPointSize(thicknessToDraw);
 	list< pair<int,int> >:: iterator it;
 	for(it = coordinates.begin(); it!= coordinates.end();it++)
@@ -83,7 +83,7 @@ void SymmetricDDA :: draw(int startX,int endX,int startY,int endY,int width,int 
         coordinates.push_back(currentCoordinates);
 
         loop = 1;
-        glColor3fv(color);
+        glColor3ubv(color);
         //glPointSize((GLdouble)thickness);
         glPointSize(thickness);
        // cout<<"PATTERN IS: "<<pattern;

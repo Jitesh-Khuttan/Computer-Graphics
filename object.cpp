@@ -3,11 +3,12 @@
 #include "color.h"
 #include "thickness.h"
 #include "pattern.h"
+#include "circle.h"
 
 extern list<Object*> allObjects;
 extern int width,height;
 
-void Object ::setColor(float* color)
+void Object ::setColor(GLubyte* color)
 {
     this->color = color;
 }
@@ -58,6 +59,15 @@ void Object :: translateObject(int dx,int dy)
 		{
 			(*it).first += dx;
 			(*it).second += dy;
+		}
+		if(objectName == "Circle")
+		{
+			((Circle*)this)->rePaintFilledCoordinates();
+			for(it = ((Circle*)this)->filledCoordinates.begin(); it!= ((Circle*)this)->filledCoordinates.end();it++)	//Downcasting for accessing filledCoordinates
+			{
+				(*it).first += dx;
+				(*it).second += dy;
+			}
 		}
 		
 		int startX,startY,endX,endY;
@@ -120,6 +130,18 @@ void Object :: rotateObject(int rotationAngle,pair<int,int> pivotPoint)
 			tempy = (*it).second;
 			(*it).first = pivotPoint.first + (tempx - pivotPoint.first)*cos(rotationAngle*3.14159/180) - (tempy - pivotPoint.second)*sin(rotationAngle*3.14159/180);
 			(*it).second = pivotPoint.second + (tempx - pivotPoint.first)*sin(rotationAngle*3.14159/180) + (tempy - pivotPoint.second)*cos(rotationAngle*3.14159/180);
+		}
+		
+		if(objectName == "Circle")
+		{
+			((Circle*)this)->rePaintFilledCoordinates();
+			for(it = ((Circle*)this)->filledCoordinates.begin(); it!= ((Circle*)this)->filledCoordinates.end();it++)	//Downcasting for accessing filledCoordinates
+			{
+				tempx = (*it).first;
+				tempy = (*it).second;
+				(*it).first = pivotPoint.first + (tempx - pivotPoint.first)*cos(rotationAngle*3.14159/180) - (tempy - pivotPoint.second)*sin(rotationAngle*3.14159/180);
+				(*it).second = pivotPoint.second + (tempx - pivotPoint.first)*sin(rotationAngle*3.14159/180) + (tempy - pivotPoint.second)*cos(rotationAngle*3.14159/180);
+			}
 		}
 		
 		int startX,startY,endX,endY;

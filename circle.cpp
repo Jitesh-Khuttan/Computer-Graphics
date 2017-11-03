@@ -9,19 +9,20 @@ extern int minX,maxX,minY,maxY;
 extern list<Object*> allObjects;
 extern int width,height;
 
-Circle ::Circle(float* color,int thickness,string pattern)
+Circle ::Circle(GLubyte* color,int thickness,string pattern)
 {
     this->color = color;
     this->thickness = thickness;
     this->pattern = pattern;
     this->patternIndex = 0;
+    this->filled = 0;
     this->objectName = "Circle";
 }
 
-void Circle :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
+void Circle :: reDrawSelectedObject(GLubyte* colorToDraw,int thicknessToDraw)
 {
 	//cout<<"Redrawing Selected Circle "<<endl;
-	glColor3fv(colorToDraw);
+	glColor3ubv(colorToDraw);
 	glPointSize(Thickness::THICKNESS10);
 	if(colorToDraw == Color::BLACK)
 	{
@@ -37,82 +38,67 @@ void Circle :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
 			glVertex2i((*it).first, (*it).second);
 		glEnd();
 	}
+	
+	if(filled)
+	{
+		if(colorToDraw != Color::NAVYBLUE)
+			glColor3ubv(this->fillColor);
+		for(it = filledCoordinates.begin(); it!= filledCoordinates.end();it++)
+		{
+			glBegin(GL_POINTS);
+				glVertex2i((*it).first, (*it).second);
+			glEnd();
+		}	
+	}
 	glFlush();
 }
 
-
-
-void Circle :: fillBoundary(int x,int y,float* fillColor,float* boundaryColor)
+void Circle :: rePaintFilledCoordinates()
 {
-	GLubyte interiorColor[3];
-	GLubyte tempFillColor[3];
-	GLubyte tempBoundaryColor[3];
-	tempFillColor[0] = fillColor[0]*255;
-	tempFillColor[1] = fillColor[1]*255;
-	tempFillColor[2] = fillColor[2]*255;
-	
-	tempBoundaryColor[0] = boundaryColor[0]*255;
-	tempBoundaryColor[1] =  boundaryColor[1]*255;
-	tempBoundaryColor[2] = boundaryColor[2]*255;
-	
-	//cout<<"Reading Pixel from: "<<
-	cout<<"\n\tReading Pixel From Original Coordinates: ("<<x <<","<<y<<")";
-	cout<<"\n\tReading Pixel From Shifted Coordinates: ("<<x - width/2 <<","<<height/2 - y<<")";
-	glReadPixels(x,y,1,1,GL_RGB,GL_UNSIGNED_BYTE,interiorColor);
-	cout<<"Interior Color R: "<<int(interiorColor[0])<<" G: "<<int(interiorColor[1])<<" B: "<<int(interiorColor[2])<<endl;
-	cout<<"Fill Color Color R: "<<int(tempFillColor[0])<<" G: "<<int(tempFillColor[1])<<" B: "<<int(tempFillColor[2])<<endl;
-	cout<<"Boundary Color R: "<<int(tempBoundaryColor[0])<<" G: "<<int(tempBoundaryColor[1])<<" B: "<<int(tempBoundaryColor[2])<<endl<<endl;
-	if(interiorColor[0] == Color::BLACK[0] && interiorColor[1] == Color::BLACK[1] && interiorColor[2] == Color::BLACK[2] )
-		cout<<"\n\tInterior Color: BLACK";
-	else if(interiorColor[0] == Color::NAVYBLUE[0] && interiorColor[1] == Color::NAVYBLUE[1] && interiorColor[2] == Color::NAVYBLUE[2])
-		cout<<"\n\tInterior Color: NAVY";	
-	
-	list< pair<int,int> >::iterator it;
-	for(it = coordinates.begin();it != coordinates.end();it++)
+	list< pair<int,int> > :: iterator it;
+	glColor3ubv(Color::BLACK);
+	for(it = filledCoordinates.begin(); it!= filledCoordinates.end();it++)
 	{
-		if(x - width/2 == (*it).first && height/2 - y == (*it).second)
-			cout<<"COORDINATESSSSS MATCHEDDDDDD!";
+		glBegin(GL_POINTS);
+			glVertex2i((*it).first, (*it).second);
+		glEnd();
 	}
+}
+void Circle :: fillBoundary(int x,int y,GLubyte* fillColor,GLubyte* boundaryColor)
+{
+	this->fillColor = fillColor;
+	filled = true;
+	fillCircle(x,y,fillColor,boundaryColor);
 	
-//	cout<<"Checking: "<<int(interiorColor[0]*10)<<" with "<<int(fillColor[0]*10)<<endl;
-//	if(int(interiorColor[0]*10) != int(fillColor[0]*10))
-//	{
-//		cout<<"Condition 1 True"<<endl;
-//	}
-//	
-//	cout<<"Checking: "<<int(interiorColor[1]*10) <<" with "<<int(fillColor[1]*10)<<endl;
-//	if(int(interiorColor[1]*10) != int(fillColor[1]*10))
-//		cout<<"Condition 2 True"<<endl;
-//	
-//	cout<<"Multiplicaton Result Of"<<interiorColor[2]<<" with "<<10<<" is :"<<interiorColor[2]*10;
-//	cout<<"Checking: "<<(interiorColor[2]*10) <<" with "<< int(fillColor[2]*10)<<endl;
-//	if(int(interiorColor[2]*10) != int(fillColor[2]*10))
-//		cout<<"Condition 3 True"<<endl;
-//	
-//	cout<<"Checking: "<<int(interiorColor[0]*10) <<" with "<< int(boundaryColor[0]*10)<<endl;
-//	if(int(interiorColor[0]*10) != int(boundaryColor[0]*10))
-//		cout<<"Condition 4 True"<<endl;
-//	
-//	cout<<"Checking: "<<int(interiorColor[1]*10) <<" with "<< int(boundaryColor[1]*10)<<endl;
-//	if(int(interiorColor[1]*10) != int(boundaryColor[1]*10))
-//		cout<<"Condition 5 True"<<endl;
-//	
-//	cout<<"Checking: "<<int(interiorColor[2]*10) <<" with "<< int(boundaryColor[2]*10)<<endl;	
-//	if(int(interiorColor[2]*10) != int(boundaryColor[2]*10))
-//		cout<<"Condition 6 True"<<endl;
-
-	if((int(interiorColor[0]) != int(tempFillColor[0]) || int(interiorColor[1]) != int(tempFillColor[1]) || int(interiorColor[2]) != int(tempFillColor[2])) || (int(interiorColor[0]) != int(tempBoundaryColor[0]) || int(interiorColor[1]) != int(tempBoundaryColor[1]) || int(interiorColor[2]) != int(tempBoundaryColor[2])))
+	reDrawSelectedObject(Color::BLACK,this->thickness+2);
+	reDrawSelectedObject(this->color,this->thickness);
+	//Redrawing the objects to the screen
+	list<Object*>:: iterator i;
+	for(i = allObjects.begin(); i!= allObjects.end();i++)
 	{
-		glColor3fv(fillColor);
+		if(*i != this)
+			(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
+	}
+}
+
+void Circle :: fillCircle(int x,int y,GLubyte* fillColor,GLubyte* boundaryColor)
+{	
+	GLubyte interiorColor[3];
+	glReadPixels(x,height - y,1,1,GL_RGB,GL_UNSIGNED_BYTE,interiorColor);
+
+	if((interiorColor[0] != fillColor[0] || interiorColor[1] != fillColor[1] || interiorColor[2] != fillColor[2]) && (interiorColor[0] != boundaryColor[0] || interiorColor[1] != boundaryColor[1] || interiorColor[2] != boundaryColor[2]))
+	{
+		glColor3ubv(fillColor);
 		glPointSize(Thickness::THICKNESS1);
 		glBegin(GL_POINTS);
 			glVertex2i(x - width/2,height/2 - y);
+			filledCoordinates.push_back(make_pair(x-width/2,height/2 - y));
 		glEnd();
 		glFlush();
-		fillBoundary(x+1,y,fillColor,boundaryColor);
-		fillBoundary(x-1,y,fillColor,boundaryColor);
-		fillBoundary(x,y+1,fillColor,boundaryColor);
-		fillBoundary(x,y-1,fillColor,boundaryColor);
+		fillCircle(x+1,y,fillColor,boundaryColor);
+		fillCircle(x-1,y,fillColor,boundaryColor);
+		fillCircle(x,y+1,fillColor,boundaryColor);
+		fillCircle(x,y-1,fillColor,boundaryColor);
 	}
 }
 
@@ -137,7 +123,7 @@ void Circle::clipPointsOfCircle(int X,int Y)
 void Circle::putPixel(int Xc,int Yc,int currentx,int currenty)
 {
     pair<int,int> currentCoordinates;
-	glColor3fv(color);
+	glColor3ubv(color);
 	glPointSize(thickness);
 	patternIndex = patternIndex%10;
 	if(pattern[patternIndex] == 49)

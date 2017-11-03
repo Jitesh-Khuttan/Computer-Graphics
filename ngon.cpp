@@ -10,7 +10,7 @@ extern int minX,maxX,minY,maxY;
 //GLubyte *interiorColor = new GLubyte[3];
 extern list<Object*> allObjects;
 
-Ngon ::Ngon(float* color,int thickness,string pattern)
+Ngon ::Ngon(GLubyte* color,int thickness,string pattern)
 {
     this->color = color;
     this->thickness = thickness;
@@ -20,10 +20,10 @@ Ngon ::Ngon(float* color,int thickness,string pattern)
 }
 
 
-void Ngon :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
+void Ngon :: reDrawSelectedObject(GLubyte* colorToDraw,int thicknessToDraw)
 {
 	cout<<"Redrawing Selected Circle "<<endl;
-	glColor3fv(colorToDraw);
+	glColor3ubv(colorToDraw);
 	glPointSize(Thickness::THICKNESS10);
 	if(colorToDraw == Color::BLACK)
 	{
@@ -70,7 +70,7 @@ void Ngon::draw(int startX,int endX,int startY,int endY,int width,int height)
     endX = endX - width/2;
     endY = height/2 - endY;
     
-    glColor3fv(Color::BLACK);
+    glColor3ubv(Color::BLACK);
 	glPointSize(Thickness::THICKNESS10);
 	glBegin(GL_POINTS);
 		glVertex2i(startX,startY);
@@ -89,7 +89,7 @@ void Ngon::draw(int startX,int endX,int startY,int endY,int width,int height)
     
 
 	tempCoordinates = startPoint;
-	glColor3fv(Color::NAVYBLUE);
+	glColor3ubv(Color::NAVYBLUE);
 	for(int counter=0;counter<totalVertices;counter++)
 	{
 //		cout<<"INSIDE Coordinate initialisation!"<<endl;

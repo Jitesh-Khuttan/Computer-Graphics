@@ -11,7 +11,7 @@ extern int width,height;
 
 
 
-EllipseObject:: EllipseObject(float* color,int thickness,string pattern)
+EllipseObject:: EllipseObject(GLubyte* color,int thickness,string pattern)
 {
     this->color = color;
     this->thickness = thickness;
@@ -20,10 +20,10 @@ EllipseObject:: EllipseObject(float* color,int thickness,string pattern)
     this->objectName = "Ellipse";
 }
 
-void EllipseObject :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
+void EllipseObject :: reDrawSelectedObject(GLubyte* colorToDraw,int thicknessToDraw)
 {
 	//cout<<"Redrawing Selected Ellipse "<<endl;
-	glColor3fv(colorToDraw);
+	glColor3ubv(colorToDraw);
 	glPointSize(Thickness::THICKNESS10);
 	if(colorToDraw == Color::BLACK)
 	{
@@ -62,7 +62,7 @@ void EllipseObject::clipPointsOfEllipse(int X,int Y)
 void EllipseObject::putEllipsePixel(int Xc,int Yc,int currentx,int currenty)
 {
     pair<int,int> currentCoordinates;
-	glColor3fv(color);
+	glColor3ubv(color);
 	glPointSize(thickness);
 	patternIndex = patternIndex%10;
 	if(pattern[patternIndex] == 49)

@@ -7,7 +7,7 @@
 extern list<Object*> allObjects;
 extern int width,height;
 
-MidPoint :: MidPoint(float* color,int thickness,string pattern)
+MidPoint :: MidPoint(GLubyte* color,int thickness,string pattern)
 {
     this->color = color;
     this->thickness = thickness;
@@ -17,10 +17,10 @@ MidPoint :: MidPoint(float* color,int thickness,string pattern)
 }
 
 
-void MidPoint :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
+void MidPoint :: reDrawSelectedObject(GLubyte* colorToDraw,int thicknessToDraw)
 {
 	//cout<<"Redrawing Selected MidPoint "<<endl;
-	glColor3fv(colorToDraw);
+	glColor3ubv(colorToDraw);
 	glPointSize(thicknessToDraw);
 	list< pair<int,int> >:: iterator it;
 	for(it = coordinates.begin(); it!= coordinates.end();it++)
@@ -153,7 +153,7 @@ void MidPoint::draw(int startX,int endX,int startY,int endY,int width,int height
 	int x, y, steps;
 	float LineSlopeGT1;
 
-	glColor3fv(color);
+	glColor3ubv(color);
 
 	startX = startX - width/2;
     startY = height/2 - startY;

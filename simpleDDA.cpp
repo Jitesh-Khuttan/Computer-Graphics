@@ -7,7 +7,7 @@
 extern list<Object*> allObjects;
 extern int width,height;
 
-SimpleDDA :: SimpleDDA(float* color,int thickness,string pattern)
+SimpleDDA :: SimpleDDA(GLubyte* color,int thickness,string pattern)
 {
     this->color = color;
     this->thickness = thickness;
@@ -17,10 +17,10 @@ SimpleDDA :: SimpleDDA(float* color,int thickness,string pattern)
 }
 
 
-void SimpleDDA :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
+void SimpleDDA :: reDrawSelectedObject(GLubyte* colorToDraw,int thicknessToDraw)
 {
 	//cout<<"Redrawing Selected SimpleDDA "<<endl;
-	glColor3fv(colorToDraw);
+	glColor3ubv(colorToDraw);
 	glPointSize(thicknessToDraw);
 	list< pair<int,int> >:: iterator it;
 	for(it = coordinates.begin(); it!= coordinates.end();it++)
@@ -66,7 +66,7 @@ void SimpleDDA::draw(int startX,int endX,int startY,int endY,int width,int heigh
         C_Y = startY;
 
         //glClear(GL_COLOR_BUFFER_BIT);
-        glColor3fv(color);
+        glColor3ubv(color);
         //glPointSize(5.0);
 		glPointSize(thickness);
         for(loop=1;loop<=maxValue;loop++)

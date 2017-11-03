@@ -1,7 +1,7 @@
 #include "cohensutherland.h"
 
 extern list<Object*> allObjects;
-extern float *CURRENTCOLOR;
+extern GLubyte *CURRENTCOLOR;
 extern string CURRENTPATTERN;
 extern int CURRENTTHICKNESS;
 

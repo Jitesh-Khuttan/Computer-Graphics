@@ -6,7 +6,7 @@ extern GLsizei height;
 
 void Axis :: drawAxis()
 {
-	glColor3fv(Color::GREEN);
+	glColor3ubv(Color::GREEN);
 	glLineWidth(Thickness::THICKNESS2);
 	glBegin(GL_LINES);
 		glVertex2i(0,height/2);

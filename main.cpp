@@ -17,7 +17,7 @@
 using namespace std;
 
 list<Object*> allObjects;
-float *CURRENTCOLOR = Color::RED;
+GLubyte *CURRENTCOLOR = Color::RED;
 string CURRENTPATTERN = Pattern::HEX_15;
 int CURRENTTHICKNESS = Thickness::THICKNESS1;
 
@@ -37,7 +37,7 @@ pair<int,int> selectedCoordinates;
 pair<int,int> translateCoordinates;
 pair<int,int> pivotPoint = pair<int,int>(0,0);
 pair<int,int> seedPoint;
-float* fillColor;
+GLubyte* fillColor;
 Object* selectedObject;
 bool boundaryFill = false;
 
@@ -63,11 +63,13 @@ void initGLUT()
 	//set background color
 	glClearColor(0.0,0.0,0.0,1.0); 
 	glClear(GL_COLOR_BUFFER_BIT);
-
+	glViewport(0,0,width,height);
 	glMatrixMode(GL_PROJECTION);
 	//gluOrtho2D(-800.0,800.0,-1000.0,1000.0);
 	glLoadIdentity();
 	gluOrtho2D(-(GLdouble)width/2,(GLdouble)width/2,-(GLdouble)height/2,(GLdouble)height/2);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	Axis::drawAxis();
 	glFlush();
 
@@ -76,7 +78,7 @@ void initGLUT()
 void createClipWindow()
 {
 	initGLUT();
-	glColor3fv(Color::NAVYBLUE);
+	glColor3ubv(Color::NAVYBLUE);
 	glLineWidth(Thickness::THICKNESS2);
 
 	//int tempSX,tempSY,tempEX,tempEY;
@@ -169,15 +171,13 @@ void display()
 	}
 	else if(currentAlgo >= 31 && currentAlgo <= 35)
 	{
-		cout<<"\n\tglReadPixel reads from the original pixel";
-		cout<<"\n\tglVertex21 Puts pixel in the shifted coordinates";
-		cout<<"\n\tOriginal Pixel at: ("<<currentX<<","<<currentY<<")";
+//		cout<<"\n\tglReadPixel starts reading from the bottom left corner";
+//		cout<<"\n\tglVertex2i Puts pixel in the shifted coordinates";
+//		cout<<"\n\tOriginal Pixel at: ("<<currentX<<","<<currentY<<")";
 		seedPoint.first = currentX;
 		seedPoint.second = currentY;
-//		seedPoint.first = currentX - width/2;
-//    	seedPoint.second = height/2 - currentY;
-    	//cout<<"\n\tPoint at: ("<<seedPoint.first<<","<<seedPoint.second<<")";
     	selectedObject->fillBoundary(seedPoint.first,seedPoint.second,fillColor,Color::NAVYBLUE);
+    	cout<<"\n\tFigure Filled!";
     	glFlush();
 	}
 	else if(currentAlgo >= 51 && currentAlgo <= 58 )
@@ -655,6 +655,18 @@ void createMenu()
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
+void resize(int changedWidth,int changedHeight)
+{
+	width = changedWidth;
+	height = changedHeight;
+	initGLUT();
+	list<Object*>::iterator it;
+	for(it = allObjects.begin();it != allObjects.end();it++)
+	{
+		(*it)->reDrawSelectedObject((*it)->color,(*it)->thickness);
+	}
+}
+
 int main(int argc,char* argv[])
 {
     //cout<<"LIST OF OBJECTS DECLARED!"<<endl;
@@ -664,6 +676,7 @@ int main(int argc,char* argv[])
 	glutCreateWindow("Line Algorithms");
 	glutInitWindowPosition(400,400);
 	glutDisplayFunc(initGLUT);
+	glutReshapeFunc(resize);
 	glutMouseFunc(mouseClicked);
 	createMenu();
 	glutMainLoop();

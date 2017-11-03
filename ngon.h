@@ -12,11 +12,11 @@ class Ngon : public Object
 		list< pair<int,int> > verticeList;
 		pair<int,int> pivotPoint;
 		pair<int,int> startPoint;
-		Ngon(float* color,int thickness,string pattern);
+		Ngon(GLubyte* color,int thickness,string pattern);
 		void setVertices(int);
 		void setRotationAngle(float);
 		void draw(int startX,int endX,int startY,int endY,int width,int height);
-		void reDrawSelectedObject(float*,int);
+		void reDrawSelectedObject(GLubyte*,int);
 };
 
 #endif

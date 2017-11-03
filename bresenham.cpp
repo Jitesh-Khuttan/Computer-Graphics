@@ -7,7 +7,7 @@
 extern list<Object*> allObjects;
 extern int height,width;
 
-Bresenham :: Bresenham(float* color,int thickness,string pattern)
+Bresenham :: Bresenham(GLubyte* color,int thickness,string pattern)
 {
     this->color = color;
     this->thickness = thickness;
@@ -17,11 +17,11 @@ Bresenham :: Bresenham(float* color,int thickness,string pattern)
 }
 
 
-void Bresenham :: reDrawSelectedObject(float* colorToDraw,int thicknessToDraw)
+void Bresenham :: reDrawSelectedObject(GLubyte* colorToDraw,int thicknessToDraw)
 {
 	//cout<<"Redrawing Selected Bresenham "<<endl;
 	glPointSize(thicknessToDraw);
-	glColor3fv(colorToDraw);
+	glColor3ubv(colorToDraw);
 	list< pair<int,int> >:: iterator it;
 	for(it = coordinates.begin(); it!= coordinates.end();it++)
 	{
@@ -178,7 +178,7 @@ void Bresenham ::draw(int startX,int endX,int startY,int endY,int width,int heig
 
 	//cout << "Steps: " << steps << endl << endl;
 	//cout << "(X,Y): (" << x << "," << y << ")" << endl;
-	glColor3fv(color);
+	glColor3ubv(color);
 	glPointSize((GLdouble)thickness);
 
 	currentCoordinates.first = x;

@@ -9,9 +9,9 @@ using namespace std;
 class SimpleDDA : public Object
 {
 public:
-    SimpleDDA(float* color,int thickness,string pattern);
+    SimpleDDA(GLubyte* color,int thickness,string pattern);
     void draw(int startX,int endX,int startY,int endY,int width,int height);
-    void reDrawSelectedObject(float*,int);
+    void reDrawSelectedObject(GLubyte*,int);
 };
 
 
