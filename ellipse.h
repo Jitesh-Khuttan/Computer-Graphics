@@ -9,7 +9,8 @@ using namespace std;
 class EllipseObject : public Object
 {
 	private:
-		void fillEllipse(int x,int y,GLubyte* fillColor,GLubyte* boundaryColor);
+		void fillEllipse4(int x,int y,GLubyte* fillColor,GLubyte* boundaryColor);
+		void fillEllipse8(int x,int y,GLubyte* fillColor,GLubyte* boundaryColor);
 
     public:
     	GLubyte* fillColor;
@@ -22,7 +23,7 @@ class EllipseObject : public Object
         void putEllipsePixel(int Xc,int Yc,int currentx,int currenty);
         void draw(int startX,int endX,int startY,int endY,int width,int height);
         void reDrawSelectedObject(GLubyte*,int);
-        void fillBoundary(int x,int y,GLubyte* fillColor,GLubyte* boundaryColor);
+        void fillBoundary(int x,int y,GLubyte* fillColor,GLubyte* boundaryColor,int type);
         void rePaintFilledCoordinates();
 };
 

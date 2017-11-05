@@ -21,7 +21,7 @@ GLubyte *CURRENTCOLOR = Color::RED;
 string CURRENTPATTERN = Pattern::HEX_15;
 int CURRENTTHICKNESS = Thickness::THICKNESS1;
 
-static int scaleSubMenu,thickSubMenu,mainMenu,patternSubMenu,colorSubMenu,angleSubMenu,fillSubMenu,ngonSubMenu,transformationSubMenu,drawingSubMenu,clipSubMenu;
+static int scaleSubMenu,thickSubMenu,mainMenu,patternSubMenu,colorSubMenu,angleSubMenu,fillMenus,fillSubMenu4,fillSubMenu8,ngonSubMenu,transformationSubMenu,drawingSubMenu,clipSubMenu;
 int currentAlgo = 0;
 
 int clipHeight=0,clipWidth=0,tempClipHeight,tempClipWidth;
@@ -172,11 +172,20 @@ void display()
 	else if(currentAlgo >= 31 && currentAlgo <= 35)
 	{
 //		cout<<"\n\tglReadPixel starts reading from the bottom left corner";
-//		cout<<"\n\tglVertex2i Puts pixel in the shifted coordinates";
-//		cout<<"\n\tOriginal Pixel at: ("<<currentX<<","<<currentY<<")";
 		seedPoint.first = currentX;
 		seedPoint.second = currentY;
-    	selectedObject->fillBoundary(seedPoint.first,seedPoint.second,fillColor,Color::NAVYBLUE);
+    	selectedObject->fillBoundary(seedPoint.first,seedPoint.second,fillColor,Color::NAVYBLUE,1);
+    	cout<<"\n\tFigure Filled!";
+    	glFlush();
+    	
+    	
+	}
+	else if(currentAlgo >= 62 && currentAlgo <= 66)
+	{
+//		cout<<"\n\tglReadPixel starts reading from the bottom left corner";
+		seedPoint.first = currentX;
+		seedPoint.second = currentY;
+    	selectedObject->fillBoundary(seedPoint.first,seedPoint.second,fillColor,Color::NAVYBLUE,2);
     	cout<<"\n\tFigure Filled!";
     	glFlush();
 	}
@@ -504,6 +513,29 @@ void menuCallback(int value)
 				break;
 		}
 	}
+	else if(value >= 62 && value <= 66)
+	{
+		boundaryFill = true;
+		currentAlgo = value;
+		switch(value)
+		{
+			case 62:
+				fillColor = Color::RED;
+				break;
+			case 63:
+				fillColor = Color::GREEN;
+				break;
+			case 64:
+				fillColor = Color::BLUE;
+				break;
+			case 65:
+				fillColor = Color::GRAY;
+				break;
+			case 66:
+				fillColor = Color::YELLOW;
+				break;
+		}
+	}
 	else if(value == 14)
 	{
         cohenLineClipAlgo = true;
@@ -591,7 +623,7 @@ void createMenu()
 	glutAddMenuEntry("Hex 12",29);
 	glutAddMenuEntry("Hex 15",30);
 	
-	fillSubMenu = glutCreateMenu(menuCallback);
+	fillSubMenu4 = glutCreateMenu(menuCallback);
 	glutAddMenuEntry("Red",31);
 	glutAddMenuEntry("Green",32);
 	glutAddMenuEntry("Blue",33);
@@ -620,6 +652,13 @@ void createMenu()
 	glutAddMenuEntry("4",60);
 	glutAddMenuEntry("6",61);
 	
+	fillSubMenu8 = glutCreateMenu(menuCallback);
+	glutAddMenuEntry("Red",62);
+	glutAddMenuEntry("Green",63);
+	glutAddMenuEntry("Blue",64);
+	glutAddMenuEntry("Gray",65);
+	glutAddMenuEntry("Yellow",66);
+	
 	transformationSubMenu = glutCreateMenu(menuCallback);
 	glutAddMenuEntry("Select Object",8);
 	glutAddMenuEntry("Translate Object",9);
@@ -641,12 +680,16 @@ void createMenu()
 	glutAddMenuEntry("Cohen Line Clipping",14);
 	glutAddMenuEntry("Liang Line Clipping",15);
 	
+	fillMenus = glutCreateMenu(menuCallback);
+	glutAddSubMenu("4 Boundary Fill",fillSubMenu4);
+	glutAddSubMenu("8 Boundary Fill",fillSubMenu8);
+	
 	
 	mainMenu = glutCreateMenu(menuCallback);
 	glutAddSubMenu("Drawing Operations",drawingSubMenu);	
 	glutAddSubMenu("Tranformation Operations",transformationSubMenu);
 	glutAddSubMenu("Clip Operations",clipSubMenu);
-	glutAddSubMenu("Fill Color",fillSubMenu);
+	glutAddSubMenu("Filling Operations",fillMenus);
 	glutAddSubMenu("Thickness",thickSubMenu);
 	glutAddSubMenu("Patterns",patternSubMenu);
 	glutAddSubMenu("Color",colorSubMenu);

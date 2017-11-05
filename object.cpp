@@ -50,11 +50,10 @@ void Object :: printCoordinates()
 
 void Object :: translateObject(int dx,int dy)
 {
+	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
+	Axis::drawAxis();
 	if(this->objectName != "Ellipse")
 	{
-		reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
-		Axis::drawAxis();
-		
 		list< pair<int,int> >:: iterator it;
 		for(it = vertices.begin(); it!= vertices.end();it++)
 		{
@@ -71,6 +70,7 @@ void Object :: translateObject(int dx,int dy)
 					(*it).first += dx;
 					(*it).second += dy;
 				}
+				Axis::drawAxis();
 			}
 		}
 		
@@ -100,10 +100,7 @@ void Object :: translateObject(int dx,int dy)
 		}
 	}
 	else		//For Ellipse
-	{
-		reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
-		Axis::drawAxis();
-		
+	{	
 		list< pair<int,int> >:: iterator it;
 		for(it = coordinates.begin(); it!= coordinates.end();it++)
 		{
@@ -119,6 +116,7 @@ void Object :: translateObject(int dx,int dy)
 				(*it).first += dx;
 				(*it).second += dy;
 			}
+			Axis::drawAxis();
 		}
 		list<Object*>:: iterator i;
 		for(i = allObjects.begin(); i!= allObjects.end();i++)
@@ -130,11 +128,11 @@ void Object :: translateObject(int dx,int dy)
 
 void Object :: rotateObject(int rotationAngle,pair<int,int> pivotPoint)
 {
+	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
+	Axis::drawAxis();
 	if(this->objectName != "Ellipse")
 	{
 		int tempx,tempy;
-		reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
-		Axis::drawAxis();
 	
 		list< pair<int,int> >:: iterator it;
 		for(it = vertices.begin(); it!= vertices.end();it++)
@@ -157,6 +155,7 @@ void Object :: rotateObject(int rotationAngle,pair<int,int> pivotPoint)
 					(*it).first = pivotPoint.first + (tempx - pivotPoint.first)*cos(rotationAngle*3.14159/180) - (tempy - pivotPoint.second)*sin(rotationAngle*3.14159/180);
 					(*it).second = pivotPoint.second + (tempx - pivotPoint.first)*sin(rotationAngle*3.14159/180) + (tempy - pivotPoint.second)*cos(rotationAngle*3.14159/180);
 				}
+				Axis::drawAxis();
 			}
 		}
 		
@@ -188,8 +187,6 @@ void Object :: rotateObject(int rotationAngle,pair<int,int> pivotPoint)
 	else		//For Ellipse
 	{
 		int tempx,tempy;
-		reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
-		Axis::drawAxis();
 	
 		list< pair<int,int> >:: iterator it;
 		for(it = coordinates.begin(); it!= coordinates.end();it++)
@@ -210,6 +207,7 @@ void Object :: rotateObject(int rotationAngle,pair<int,int> pivotPoint)
 				(*it).first = pivotPoint.first + (tempx - pivotPoint.first)*cos(rotationAngle*3.14159/180) - (tempy - pivotPoint.second)*sin(rotationAngle*3.14159/180);
 				(*it).second = pivotPoint.second + (tempx - pivotPoint.first)*sin(rotationAngle*3.14159/180) + (tempy - pivotPoint.second)*cos(rotationAngle*3.14159/180);
 			}
+			Axis::drawAxis();
 		}
 	
 		list<Object*>:: iterator i;
@@ -224,10 +222,10 @@ void Object :: rotateObject(int rotationAngle,pair<int,int> pivotPoint)
 
 void Object :: scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint)
 {
+	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
+	Axis::drawAxis();
 	if(this->objectName != "Ellipse")
 	{
-		reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
-		Axis::drawAxis();
 		list< pair<int,int> > :: iterator it;
 		for(it = vertices.begin(); it!= vertices.end();it++)
 		{
@@ -264,8 +262,6 @@ void Object :: scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint)
 	{
 		pivotPoint.first = 0;
 		pivotPoint.second = 0;
-		reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
-		Axis::drawAxis();
 		list< pair<int,int> > :: iterator it;
 		for(it = coordinates.begin(); it!= coordinates.end();it++)
 		{
