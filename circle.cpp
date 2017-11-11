@@ -91,7 +91,8 @@ void Circle :: fillCircle4(int x,int y,GLubyte* fillColor,GLubyte* boundaryColor
 	GLubyte interiorColor[3];
 	glReadPixels(x,height - y,1,1,GL_RGB,GL_UNSIGNED_BYTE,interiorColor);
 
-	if((interiorColor[0] != fillColor[0] || interiorColor[1] != fillColor[1] || interiorColor[2] != fillColor[2]) && (interiorColor[0] != boundaryColor[0] || interiorColor[1] != boundaryColor[1] || interiorColor[2] != boundaryColor[2]))
+	if((interiorColor[0] != fillColor[0] || interiorColor[1] != fillColor[1] || interiorColor[2] != fillColor[2]) && 
+	(interiorColor[0] != boundaryColor[0] || interiorColor[1] != boundaryColor[1] || interiorColor[2] != boundaryColor[2]))
 	{
 		glColor3ubv(fillColor);
 		glPointSize(Thickness::THICKNESS1);
@@ -113,7 +114,8 @@ void Circle :: fillCircle8(int x,int y,GLubyte* fillColor,GLubyte* boundaryColor
 	GLubyte interiorColor[3];
 	glReadPixels(x,height - y,1,1,GL_RGB,GL_UNSIGNED_BYTE,interiorColor);
 
-	if((interiorColor[0] != fillColor[0] || interiorColor[1] != fillColor[1] || interiorColor[2] != fillColor[2]) && (interiorColor[0] != boundaryColor[0] || interiorColor[1] != boundaryColor[1] || interiorColor[2] != boundaryColor[2]))
+	if((interiorColor[0] != fillColor[0] || interiorColor[1] != fillColor[1] || interiorColor[2] != fillColor[2]) && 
+	(interiorColor[0] != boundaryColor[0] || interiorColor[1] != boundaryColor[1] || interiorColor[2] != boundaryColor[2]))
 	{
 		glColor3ubv(fillColor);
 		glPointSize(Thickness::THICKNESS1);

@@ -5,6 +5,7 @@
 #include "pattern.h"
 #include "circle.h"
 #include "ellipse.h"
+#include "bezier.h"
 
 extern list<Object*> allObjects;
 extern int width,height;
@@ -52,7 +53,7 @@ void Object :: translateObject(int dx,int dy)
 {
 	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
 	Axis::drawAxis();
-	if(this->objectName != "Ellipse")
+	if(this->objectName != "Ellipse" && this->objectName != "Bezier")
 	{
 		list< pair<int,int> >:: iterator it;
 		for(it = vertices.begin(); it!= vertices.end();it++)
@@ -99,7 +100,7 @@ void Object :: translateObject(int dx,int dy)
 			(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
 		}
 	}
-	else		//For Ellipse
+	else if(this->objectName == "Ellipse")		//For Ellipse
 	{	
 		list< pair<int,int> >:: iterator it;
 		for(it = coordinates.begin(); it!= coordinates.end();it++)
@@ -124,13 +125,34 @@ void Object :: translateObject(int dx,int dy)
 			(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
 		}
 	}
+	else if(this->objectName == "Bezier")
+	{
+		coordinates.clear();
+		glColor3ubv(Color::BLACK);
+		list< pair<int,int> > :: iterator it;
+		for(it = ((Bezier*)(this))->controlPoints.begin();it != ((Bezier*)(this))->controlPoints.end();it++)
+		{
+			glBegin(GL_POINTS);
+				glVertex2i((*it).first,(*it).second);
+			glEnd();
+			(*it).first += dx;
+			(*it).second += dy;
+		}
+		((Bezier*)(this))->drawCurve(((Bezier*)(this))->controlPoints);		//Redrawing the curve at new translated coordinates
+		
+		list<Object*>:: iterator i;
+		for(i = allObjects.begin(); i!= allObjects.end();i++)
+		{
+			(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
+		}
+	}
 }
 
 void Object :: rotateObject(int rotationAngle,pair<int,int> pivotPoint)
 {
 	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
 	Axis::drawAxis();
-	if(this->objectName != "Ellipse")
+	if(this->objectName != "Ellipse" && this->objectName != "Bezier")
 	{
 		int tempx,tempy;
 	
@@ -184,7 +206,7 @@ void Object :: rotateObject(int rotationAngle,pair<int,int> pivotPoint)
 			(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
 		}
 	}
-	else		//For Ellipse
+	else if(this->objectName == "Ellipse")		//For Ellipse
 	{
 		int tempx,tempy;
 	
@@ -216,15 +238,40 @@ void Object :: rotateObject(int rotationAngle,pair<int,int> pivotPoint)
 			(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
 		}
 	}
+	else if(this->objectName == "Bezier")
+	{
+		int tempx,tempy;
+		coordinates.clear();
+		glColor3ubv(Color::BLACK);
+		list< pair<int,int> > :: iterator it;
+		for(it = ((Bezier*)(this))->controlPoints.begin();it != ((Bezier*)(this))->controlPoints.end();it++)
+		{
+			glBegin(GL_POINTS);
+				glVertex2i((*it).first,(*it).second);
+			glEnd();
+			tempx = (*it).first;
+			tempy = (*it).second;
+			(*it).first = pivotPoint.first + (tempx - pivotPoint.first)*cos(rotationAngle*3.14159/180) - (tempy - pivotPoint.second)*sin(rotationAngle*3.14159/180);
+			(*it).second = pivotPoint.second + (tempx - pivotPoint.first)*sin(rotationAngle*3.14159/180) + (tempy - pivotPoint.second)*cos(rotationAngle*3.14159/180);
+		}
+		((Bezier*)(this))->drawCurve(((Bezier*)(this))->controlPoints);		//Redrawing the curve at new translated coordinates
+		
+		list<Object*>:: iterator i;
+		for(i = allObjects.begin(); i!= allObjects.end();i++)
+		{
+			(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
+		}
+	}
 	
 }
 
 
 void Object :: scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint)
 {
+	cout<<"\n\tPivot Points: "<<pivotPoint.first<<" "<<pivotPoint.second;
 	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
 	Axis::drawAxis();
-	if(this->objectName != "Ellipse")
+	if(this->objectName != "Ellipse" && this->objectName != "Bezier")	//This code is same for lines and Circle
 	{
 		list< pair<int,int> > :: iterator it;
 		for(it = vertices.begin(); it!= vertices.end();it++)
@@ -258,16 +305,36 @@ void Object :: scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint)
 		}	
 	}
 	
-	else
+	else if(this->objectName == "Ellipse")
 	{
-		pivotPoint.first = 0;
-		pivotPoint.second = 0;
 		list< pair<int,int> > :: iterator it;
 		for(it = coordinates.begin(); it!= coordinates.end();it++)
 		{
 			(*it).first += (*it).first * scaleValue.first + pivotPoint.first * (1 - scaleValue.first);
 			(*it).second += (*it).second * scaleValue.second + pivotPoint.second * (1 - scaleValue.second);
 		}
+		list<Object*>:: iterator i;
+		for(i = allObjects.begin(); i!= allObjects.end();i++)
+		{
+			(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
+		}
+	}
+	else if(this->objectName == "Bezier")
+	{
+		coordinates.clear();
+		glColor3ubv(Color::BLACK);
+		list< pair<int,int> > :: iterator it;
+		for(it = ((Bezier*)(this))->controlPoints.begin();it != ((Bezier*)(this))->controlPoints.end();it++)
+		{
+			glBegin(GL_POINTS);
+				glVertex2i((*it).first,(*it).second);
+			glEnd();
+			(*it).first += (*it).first * scaleValue.first + pivotPoint.first * (1 - scaleValue.first);
+			(*it).second += (*it).second * scaleValue.second + pivotPoint.second * (1 - scaleValue.second);
+		}
+		((Bezier*)(this))->drawCurve(((Bezier*)(this))->controlPoints);		//Redrawing the curve at new translated coordinates
+		
+		Axis::drawAxis();
 		list<Object*>:: iterator i;
 		for(i = allObjects.begin(); i!= allObjects.end();i++)
 		{

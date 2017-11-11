@@ -38,6 +38,45 @@ void Bresenham :: reDrawSelectedObject(GLubyte* colorToDraw,int thicknessToDraw)
 }
 
 
+void Bresenham :: fillBoundary(int x,int y,GLubyte* fillColor,GLubyte* boundaryColor,int type)
+{
+	this->fillColor = fillColor;
+	filled = true;
+	if(type == 1)
+		fill(x,y,fillColor,boundaryColor);
+	
+	reDrawSelectedObject(Color::BLACK,this->thickness+2);
+	reDrawSelectedObject(this->color,this->thickness);
+	//Redrawing the objects to the screen
+	list<Object*>:: iterator i;
+	for(i = allObjects.begin(); i!= allObjects.end();i++)
+	{
+		if(*i != this)
+			(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
+	}
+}
+
+void Bresenham :: fill(int x,int y,GLubyte* fillColor,GLubyte* boundaryColor)
+{	
+	GLubyte interiorColor[3];
+	glReadPixels(x,height - y,1,1,GL_RGB,GL_UNSIGNED_BYTE,interiorColor);
+
+	if((interiorColor[0] != fillColor[0] || interiorColor[1] != fillColor[1] || interiorColor[2] != fillColor[2]) && (interiorColor[0] != boundaryColor[0] || interiorColor[1] != boundaryColor[1] || interiorColor[2] != boundaryColor[2]))
+	{
+		glColor3ubv(fillColor);
+		glPointSize(Thickness::THICKNESS1);
+		glBegin(GL_POINTS);
+			glVertex2i(x - width/2,height/2 - y);
+			filledCoordinates.push_back(make_pair(x-width/2,height/2 - y));
+		glEnd();
+		glFlush();
+		fill(x+1,y,fillColor,boundaryColor);
+		fill(x-1,y,fillColor,boundaryColor);
+		fill(x,y+1,fillColor,boundaryColor);
+		fill(x,y-1,fillColor,boundaryColor);
+	}
+}
+
 void Bresenham :: BslopeLT1(int steps, int x, int y, int dx, int dy,int startX,int endX,int startY,int endY)
 {
     pair<int,int> currentCoordinates;

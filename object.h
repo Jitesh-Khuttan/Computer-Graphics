@@ -27,7 +27,7 @@ public:
     void scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint);
     virtual void fillBoundary(int x,int y,GLubyte* fillColor,GLubyte* selectedObject,int type) {}
     virtual void draw(int startX,int endX,int startY,int endY,int width,int height) = 0;
-    virtual void reDrawSelectedObject(GLubyte*,int) = 0;
+    virtual void reDrawSelectedObject(GLubyte* colorToDraw,int thicknessToDraw) = 0;
 };
 
 #endif // OBJECT

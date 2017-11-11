@@ -7,6 +7,7 @@
 #include "midpoint.h"
 #include "circle.h"
 #include "ellipse.h"
+#include "bezier.h"
 #include "cohensutherland.h"
 #include "liang.h"
 #include "pattern.h"
@@ -21,7 +22,8 @@ GLubyte *CURRENTCOLOR = Color::RED;
 string CURRENTPATTERN = Pattern::HEX_15;
 int CURRENTTHICKNESS = Thickness::THICKNESS1;
 
-static int scaleSubMenu,thickSubMenu,mainMenu,patternSubMenu,colorSubMenu,angleSubMenu,fillMenus,fillSubMenu4,fillSubMenu8,ngonSubMenu,transformationSubMenu,drawingSubMenu,clipSubMenu;
+static int scaleSubMenu,thickSubMenu,mainMenu,patternSubMenu,colorSubMenu,angleSubMenu,
+fillMenus,fillSubMenu4,fillSubMenu8,ngonSubMenu,transformationSubMenu,drawingSubMenu,clipSubMenu,curveSubMenu,bezierSubMenu;
 int currentAlgo = 0;
 
 int clipHeight=0,clipWidth=0,tempClipHeight,tempClipWidth;
@@ -35,7 +37,8 @@ pair<int,int> scalingValue;
 
 pair<int,int> selectedCoordinates;
 pair<int,int> translateCoordinates;
-pair<int,int> pivotPoint = pair<int,int>(0,0);
+pair<int,int> pivotPoint = make_pair(0,0);
+list< pair<int,int> > controlPoints;
 pair<int,int> seedPoint;
 GLubyte* fillColor;
 Object* selectedObject;
@@ -168,6 +171,7 @@ void display()
 	{
 		pivotPoint.first = currentX - width/2;
     	pivotPoint.second = height/2 - currentY;
+    	cout<<"\n\tPivot Points: "<<pivotPoint.first<<" "<<pivotPoint.second;
 	}
 	else if(currentAlgo >= 31 && currentAlgo <= 35)
 	{
@@ -204,6 +208,12 @@ void display()
 		selectedObject->thickness = CURRENTTHICKNESS;
 		selectedObject->color = CURRENTCOLOR;
 		selectedObject->scaleObject(scalingValue,pivotPoint);
+	}
+	else if(currentAlgo == 71)
+	{
+		Bezier *curve = new Bezier(CURRENTCOLOR,CURRENTTHICKNESS,CURRENTPATTERN);
+		curve->drawCurve(controlPoints);
+		allObjects.push_back(curve);
 	}
 	
 	if(clickCount%2 == 0)
@@ -376,8 +386,12 @@ void mouseClicked(GLint button,GLint state,GLint x,GLint y)
 	currentY = y;
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && currentAlgo!=0 )
 	{
+		if(currentAlgo == 70)
+		{
+			controlPoints.push_back(make_pair(currentX - width/2,height/2- currentY));
+		}
 		glColor3f(.9,.4,.6);
-		glPointSize(10.0);
+		glPointSize(2.0);
 		++clickCount;
 		if(clickCount%2 == 1)
 		{
@@ -595,6 +609,15 @@ void menuCallback(int value)
 		boundaryFill = false;
 		currentAlgo = value;
 	}
+	else if(value>=70 && value<=71)
+	{
+		boundaryFill = false;
+		currentAlgo = value;
+		if(currentAlgo == 70)
+			controlPoints.clear();
+		else if(currentAlgo == 71)
+			display();
+	}
 
 }
 
@@ -684,10 +707,18 @@ void createMenu()
 	glutAddSubMenu("4 Boundary Fill",fillSubMenu4);
 	glutAddSubMenu("8 Boundary Fill",fillSubMenu8);
 	
+	bezierSubMenu = glutCreateMenu(menuCallback);
+	glutAddMenuEntry("Select Control Points",70);
+	glutAddMenuEntry("Draw Curve",71);
+	
+	curveSubMenu = glutCreateMenu(menuCallback);
+	glutAddSubMenu("Bezier Curve",bezierSubMenu);
+	
 	
 	mainMenu = glutCreateMenu(menuCallback);
 	glutAddSubMenu("Drawing Operations",drawingSubMenu);	
 	glutAddSubMenu("Tranformation Operations",transformationSubMenu);
+	glutAddSubMenu("Curve Generation",curveSubMenu);
 	glutAddSubMenu("Clip Operations",clipSubMenu);
 	glutAddSubMenu("Filling Operations",fillMenus);
 	glutAddSubMenu("Thickness",thickSubMenu);
