@@ -23,7 +23,7 @@ string CURRENTPATTERN = Pattern::HEX_15;
 int CURRENTTHICKNESS = Thickness::THICKNESS1;
 
 static int scaleSubMenu,thickSubMenu,mainMenu,patternSubMenu,colorSubMenu,angleSubMenu,
-fillMenus,fillSubMenu4,fillSubMenu8,ngonSubMenu,transformationSubMenu,drawingSubMenu,clipSubMenu,curveSubMenu,bezierSubMenu;
+fillMenus,fillSubMenu4,fillSubMenu8,ngonSubMenu,transformationSubMenu,drawingSubMenu,clipSubMenu,curveSubMenu,bezierSubMenu,fillSubMenuFlood;
 int currentAlgo = 0;
 
 int clipHeight=0,clipWidth=0,tempClipHeight,tempClipWidth;
@@ -190,6 +190,15 @@ void display()
 		seedPoint.first = currentX;
 		seedPoint.second = currentY;
     	selectedObject->fillBoundary(seedPoint.first,seedPoint.second,fillColor,Color::NAVYBLUE,2);
+    	cout<<"\n\tFigure Filled!";
+    	glFlush();
+	}
+	else if(currentAlgo >= 81 && currentAlgo <= 85)
+	{
+//		cout<<"\n\tglReadPixel starts reading from the bottom left corner";
+		seedPoint.first = currentX;
+		seedPoint.second = currentY;
+    	selectedObject->fillBoundary(seedPoint.first,seedPoint.second,fillColor,Color::NAVYBLUE,3);
     	cout<<"\n\tFigure Filled!";
     	glFlush();
 	}
@@ -550,6 +559,29 @@ void menuCallback(int value)
 				break;
 		}
 	}
+	else if(value >= 81 && value<=85)
+	{
+		boundaryFill = true;
+		currentAlgo = value;
+		switch(value)
+		{
+			case 81:
+				fillColor = Color::RED;
+				break;
+			case 82:
+				fillColor = Color::GREEN;
+				break;
+			case 83:
+				fillColor = Color::BLUE;
+				break;
+			case 84:
+				fillColor = Color::GRAY;
+				break;
+			case 85:
+				fillColor = Color::YELLOW;
+				break;
+		}
+	}
 	else if(value == 14)
 	{
         cohenLineClipAlgo = true;
@@ -652,6 +684,20 @@ void createMenu()
 	glutAddMenuEntry("Blue",33);
 	glutAddMenuEntry("Gray",34);
 	glutAddMenuEntry("Yellow",35);
+
+	fillSubMenu8 = glutCreateMenu(menuCallback);
+	glutAddMenuEntry("Red",62);
+	glutAddMenuEntry("Green",63);
+	glutAddMenuEntry("Blue",64);
+	glutAddMenuEntry("Gray",65);
+	glutAddMenuEntry("Yellow",66);
+	
+	fillSubMenuFlood = glutCreateMenu(menuCallback);
+	glutAddMenuEntry("Red",81);
+	glutAddMenuEntry("Green",82);
+	glutAddMenuEntry("Blue",83);
+	glutAddMenuEntry("Gray",84);
+	glutAddMenuEntry("Yellow",85);
 	
 	ngonSubMenu = glutCreateMenu(menuCallback);
 	glutAddMenuEntry("5",36);
@@ -675,12 +721,6 @@ void createMenu()
 	glutAddMenuEntry("4",60);
 	glutAddMenuEntry("6",61);
 	
-	fillSubMenu8 = glutCreateMenu(menuCallback);
-	glutAddMenuEntry("Red",62);
-	glutAddMenuEntry("Green",63);
-	glutAddMenuEntry("Blue",64);
-	glutAddMenuEntry("Gray",65);
-	glutAddMenuEntry("Yellow",66);
 	
 	transformationSubMenu = glutCreateMenu(menuCallback);
 	glutAddMenuEntry("Select Object",8);
@@ -706,6 +746,7 @@ void createMenu()
 	fillMenus = glutCreateMenu(menuCallback);
 	glutAddSubMenu("4 Boundary Fill",fillSubMenu4);
 	glutAddSubMenu("8 Boundary Fill",fillSubMenu8);
+	glutAddSubMenu("Flood Fill",fillSubMenuFlood);
 	
 	bezierSubMenu = glutCreateMenu(menuCallback);
 	glutAddMenuEntry("Select Control Points",70);

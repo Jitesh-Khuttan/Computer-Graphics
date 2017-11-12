@@ -276,8 +276,8 @@ void Object :: scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint)
 		list< pair<int,int> > :: iterator it;
 		for(it = vertices.begin(); it!= vertices.end();it++)
 		{
-			(*it).first += (*it).first * scaleValue.first + pivotPoint.first * (1 - scaleValue.first);
-			(*it).second += (*it).second * scaleValue.second + pivotPoint.second * (1 - scaleValue.second);
+			(*it).first = (*it).first * scaleValue.first + pivotPoint.first * (1 - scaleValue.first);
+			(*it).second = (*it).second * scaleValue.second + pivotPoint.second * (1 - scaleValue.second);
 		}
 		int startX,startY,endX,endY;
 		int counter = 1;
@@ -310,8 +310,8 @@ void Object :: scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint)
 		list< pair<int,int> > :: iterator it;
 		for(it = coordinates.begin(); it!= coordinates.end();it++)
 		{
-			(*it).first += (*it).first * scaleValue.first + pivotPoint.first * (1 - scaleValue.first);
-			(*it).second += (*it).second * scaleValue.second + pivotPoint.second * (1 - scaleValue.second);
+			(*it).first = (*it).first * scaleValue.first + pivotPoint.first * (1 - scaleValue.first);
+			(*it).second = (*it).second * scaleValue.second + pivotPoint.second * (1 - scaleValue.second);
 		}
 		list<Object*>:: iterator i;
 		for(i = allObjects.begin(); i!= allObjects.end();i++)
@@ -329,8 +329,8 @@ void Object :: scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint)
 			glBegin(GL_POINTS);
 				glVertex2i((*it).first,(*it).second);
 			glEnd();
-			(*it).first += (*it).first * scaleValue.first + pivotPoint.first * (1 - scaleValue.first);
-			(*it).second += (*it).second * scaleValue.second + pivotPoint.second * (1 - scaleValue.second);
+			(*it).first = (*it).first * scaleValue.first + pivotPoint.first * (1 - scaleValue.first);
+			(*it).second = (*it).second * scaleValue.second + pivotPoint.second * (1 - scaleValue.second);
 		}
 		((Bezier*)(this))->drawCurve(((Bezier*)(this))->controlPoints);		//Redrawing the curve at new translated coordinates
 		
@@ -352,6 +352,8 @@ void Object :: fillBoundary(int x,int y,GLubyte* fillColor,GLubyte* boundaryColo
 		fill4(x,y,fillColor,boundaryColor);
 	else if(type == 2)
 		fill8(x,y,fillColor,boundaryColor);
+	else if(type == 3)
+		floodFill(x,y,fillColor);
 	
 	reDrawSelectedObject(Color::BLACK,this->thickness+2);
 	reDrawSelectedObject(this->color,this->thickness);
@@ -412,6 +414,31 @@ void Object :: fill8(int x,int y,GLubyte* fillColor,GLubyte* boundaryColor)
 		fill8(x-1,y,fillColor,boundaryColor);
 		fill8(x,y+1,fillColor,boundaryColor);
 		fill8(x,y-1,fillColor,boundaryColor);
+	}
+}
+
+void Object::floodFill(int x, int y, GLubyte* fillColor)
+{
+	GLubyte interiorColor[3];
+	glReadPixels(x,height - y,1,1,GL_RGB,GL_UNSIGNED_BYTE,interiorColor);
+	
+	if(((int)interiorColor[0] == (int)Color::BLACK[0] && (int)interiorColor[1] == (int)Color::BLACK[1] && (int)interiorColor[2] == (int)Color::BLACK[2])
+	|| ((int)interiorColor[0] == (int)Color::GREEN[0] && (int)interiorColor[1] == (int)Color::GREEN[1] && (int)interiorColor[2] == (int)Color::GREEN[2])
+	)
+	{
+		glColor3ubv(fillColor);
+		glPointSize(Thickness::THICKNESS1);
+		glBegin(GL_POINTS);
+			glVertex2i(x - width/2,height/2 - y);
+			filledCoordinates.push_back(make_pair(x-width/2,height/2 - y));
+		glEnd();
+		glFlush();
+		
+		floodFill(x+1, y, fillColor);	// Right Pixel
+		floodFill(x-1, y, fillColor);	// Left Pixel
+		glFlush();
+		floodFill(x, y+1, fillColor);	// Upper Pixel
+		floodFill(x, y-1, fillColor);	// Lower Pixel
 	}
 }
 

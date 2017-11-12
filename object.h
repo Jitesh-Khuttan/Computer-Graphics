@@ -33,6 +33,7 @@ public:
     bool selectObject(pair<int,int>);
     void scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint);
     void fillBoundary(int x,int y,GLubyte* fillColor,GLubyte* selectedObject,int type);
+    void floodFill(int x, int y, GLubyte* fillColor);
     virtual void draw(int startX,int endX,int startY,int endY,int width,int height) = 0;
     virtual void reDrawSelectedObject(GLubyte* colorToDraw,int thicknessToDraw) = 0;
 };
