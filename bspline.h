@@ -12,7 +12,7 @@ class Bspline : public Object
 		float calculateCoefficient(float u,int k,int degree);
 	public:
 		int totalControlPoints;
-//		vector<int> coefficients;
+		int degree;
 		list< pair<int,int> > controlPoints;
 		
 		Bspline(GLubyte* color,int thickness,string pattern);

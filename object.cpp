@@ -6,6 +6,7 @@
 #include "circle.h"
 #include "ellipse.h"
 #include "bezier.h"
+#include "bspline.h"
 
 extern list<Object*> allObjects;
 extern int width,height;
@@ -53,7 +54,7 @@ void Object :: translateObject(int dx,int dy)
 {
 	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
 	Axis::drawAxis();
-	if(this->objectName != "Ellipse" && this->objectName != "Bezier")
+	if(this->objectName != "Ellipse" && this->objectName != "Bezier" && this->objectName != "Bspline")
 	{
 		list< pair<int,int> >:: iterator it;
 		for(it = vertices.begin(); it!= vertices.end();it++)
@@ -125,21 +126,35 @@ void Object :: translateObject(int dx,int dy)
 			(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
 		}
 	}
-	else if(this->objectName == "Bezier")
+	else if(this->objectName == "Bezier" || this->objectName == "Bspline")
 	{
 		coordinates.clear();
 		glColor3ubv(Color::BLACK);
 		list< pair<int,int> > :: iterator it;
-		for(it = ((Bezier*)(this))->controlPoints.begin();it != ((Bezier*)(this))->controlPoints.end();it++)
+		if(this->objectName == "Bezier")
 		{
-			glBegin(GL_POINTS);
-				glVertex2i((*it).first,(*it).second);
-			glEnd();
-			(*it).first += dx;
-			(*it).second += dy;
+			for(it = ((Bezier*)(this))->controlPoints.begin();it != ((Bezier*)(this))->controlPoints.end();it++)
+			{
+				glBegin(GL_POINTS);
+					glVertex2i((*it).first,(*it).second);
+				glEnd();
+				(*it).first += dx;
+				(*it).second += dy;
+			}
+			((Bezier*)(this))->drawCurve(((Bezier*)(this))->controlPoints);		//Redrawing the curve at new translated coordinates
 		}
-		((Bezier*)(this))->drawCurve(((Bezier*)(this))->controlPoints);		//Redrawing the curve at new translated coordinates
-		
+		else if(this->objectName == "Bspline")
+		{
+			for(it = ((Bspline*)(this))->controlPoints.begin();it != ((Bspline*)(this))->controlPoints.end();it++)
+			{
+				glBegin(GL_POINTS);
+					glVertex2i((*it).first,(*it).second);
+				glEnd();
+				(*it).first += dx;
+				(*it).second += dy;
+			}
+			((Bspline*)(this))->drawCurve(((Bspline*)(this))->controlPoints,((Bspline*)(this))->degree);		//Redrawing the curve at new translated coordinates
+		}
 		list<Object*>:: iterator i;
 		for(i = allObjects.begin(); i!= allObjects.end();i++)
 		{
@@ -152,7 +167,7 @@ void Object :: rotateObject(int rotationAngle,pair<int,int> pivotPoint)
 {
 	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
 	Axis::drawAxis();
-	if(this->objectName != "Ellipse" && this->objectName != "Bezier")
+	if(this->objectName != "Ellipse" && this->objectName != "Bezier" && this->objectName != "Bspline")
 	{
 		int tempx,tempy;
 	
@@ -238,23 +253,40 @@ void Object :: rotateObject(int rotationAngle,pair<int,int> pivotPoint)
 			(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
 		}
 	}
-	else if(this->objectName == "Bezier")
+	else if(this->objectName == "Bezier" || this->objectName == "Bspline")
 	{
 		int tempx,tempy;
 		coordinates.clear();
 		glColor3ubv(Color::BLACK);
 		list< pair<int,int> > :: iterator it;
-		for(it = ((Bezier*)(this))->controlPoints.begin();it != ((Bezier*)(this))->controlPoints.end();it++)
+		if(this->objectName == "Bezier")
 		{
-			glBegin(GL_POINTS);
-				glVertex2i((*it).first,(*it).second);
-			glEnd();
-			tempx = (*it).first;
-			tempy = (*it).second;
-			(*it).first = pivotPoint.first + (tempx - pivotPoint.first)*cos(rotationAngle*3.14159/180) - (tempy - pivotPoint.second)*sin(rotationAngle*3.14159/180);
-			(*it).second = pivotPoint.second + (tempx - pivotPoint.first)*sin(rotationAngle*3.14159/180) + (tempy - pivotPoint.second)*cos(rotationAngle*3.14159/180);
+			for(it = ((Bezier*)(this))->controlPoints.begin();it != ((Bezier*)(this))->controlPoints.end();it++)
+			{
+				glBegin(GL_POINTS);
+					glVertex2i((*it).first,(*it).second);
+				glEnd();
+				tempx = (*it).first;
+				tempy = (*it).second;
+				(*it).first = pivotPoint.first + (tempx - pivotPoint.first)*cos(rotationAngle*3.14159/180) - (tempy - pivotPoint.second)*sin(rotationAngle*3.14159/180);
+				(*it).second = pivotPoint.second + (tempx - pivotPoint.first)*sin(rotationAngle*3.14159/180) + (tempy - pivotPoint.second)*cos(rotationAngle*3.14159/180);
+			}
+			((Bezier*)(this))->drawCurve(((Bezier*)(this))->controlPoints);		//Redrawing the curve at new translated coordinates
 		}
-		((Bezier*)(this))->drawCurve(((Bezier*)(this))->controlPoints);		//Redrawing the curve at new translated coordinates
+		else if(this->objectName == "Bspline")
+		{
+			for(it = ((Bspline*)(this))->controlPoints.begin();it != ((Bspline*)(this))->controlPoints.end();it++)
+			{
+				glBegin(GL_POINTS);
+					glVertex2i((*it).first,(*it).second);
+				glEnd();
+				tempx = (*it).first;
+				tempy = (*it).second;
+				(*it).first = pivotPoint.first + (tempx - pivotPoint.first)*cos(rotationAngle*3.14159/180) - (tempy - pivotPoint.second)*sin(rotationAngle*3.14159/180);
+				(*it).second = pivotPoint.second + (tempx - pivotPoint.first)*sin(rotationAngle*3.14159/180) + (tempy - pivotPoint.second)*cos(rotationAngle*3.14159/180);
+			}
+			((Bspline*)(this))->drawCurve(((Bspline*)(this))->controlPoints,((Bspline*)(this))->degree);		//Redrawing the curve at new translated coordinates
+		}
 		
 		list<Object*>:: iterator i;
 		for(i = allObjects.begin(); i!= allObjects.end();i++)
@@ -271,7 +303,7 @@ void Object :: scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint)
 	cout<<"\n\tPivot Points: "<<pivotPoint.first<<" "<<pivotPoint.second;
 	reDrawSelectedObject(Color::BLACK,Thickness::THICKNESS10);
 	Axis::drawAxis();
-	if(this->objectName != "Ellipse" && this->objectName != "Bezier")	//This code is same for lines and Circle
+	if(this->objectName != "Ellipse" && this->objectName != "Bezier" && this->objectName != "Bspline")	//This code is same for lines and Circle
 	{
 		list< pair<int,int> > :: iterator it;
 		for(it = vertices.begin(); it!= vertices.end();it++)
@@ -319,20 +351,35 @@ void Object :: scaleObject(pair<int,int> scaleValue,pair<int,int> pivotPoint)
 			(*i)->reDrawSelectedObject((*i)->color,(*i)->thickness);
 		}
 	}
-	else if(this->objectName == "Bezier")
+	else if(this->objectName == "Bezier" || this->objectName == "Bspline")
 	{
 		coordinates.clear();
 		glColor3ubv(Color::BLACK);
 		list< pair<int,int> > :: iterator it;
-		for(it = ((Bezier*)(this))->controlPoints.begin();it != ((Bezier*)(this))->controlPoints.end();it++)
+		if(this->objectName == "Bezier")
 		{
-			glBegin(GL_POINTS);
-				glVertex2i((*it).first,(*it).second);
-			glEnd();
-			(*it).first = (*it).first * scaleValue.first + pivotPoint.first * (1 - scaleValue.first);
-			(*it).second = (*it).second * scaleValue.second + pivotPoint.second * (1 - scaleValue.second);
+			for(it = ((Bezier*)(this))->controlPoints.begin();it != ((Bezier*)(this))->controlPoints.end();it++)
+			{
+				glBegin(GL_POINTS);
+					glVertex2i((*it).first,(*it).second);
+				glEnd();
+				(*it).first = (*it).first * scaleValue.first + pivotPoint.first * (1 - scaleValue.first);
+				(*it).second = (*it).second * scaleValue.second + pivotPoint.second * (1 - scaleValue.second);
+			}
+			((Bezier*)(this))->drawCurve(((Bezier*)(this))->controlPoints);		//Redrawing the curve at new translated coordinates
 		}
-		((Bezier*)(this))->drawCurve(((Bezier*)(this))->controlPoints);		//Redrawing the curve at new translated coordinates
+		else if(this->objectName == "Bspline")
+		{
+			for(it = ((Bspline*)(this))->controlPoints.begin();it != ((Bspline*)(this))->controlPoints.end();it++)
+			{
+				glBegin(GL_POINTS);
+					glVertex2i((*it).first,(*it).second);
+				glEnd();
+				(*it).first = (*it).first * scaleValue.first + pivotPoint.first * (1 - scaleValue.first);
+				(*it).second = (*it).second * scaleValue.second + pivotPoint.second * (1 - scaleValue.second);
+			}
+			((Bspline*)(this))->drawCurve(((Bspline*)(this))->controlPoints,((Bspline*)(this))->degree);		//Redrawing the curve at new translated coordinates
+		}
 		
 		Axis::drawAxis();
 		list<Object*>:: iterator i;

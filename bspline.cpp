@@ -63,6 +63,7 @@ void Bspline :: drawCurve(list< pair<int,int> > controlPoints,int degree)
 	this->controlPoints = controlPoints;
 	totalControlPoints = controlPoints.size();
 	
+	this->degree = degree;
 	n = totalControlPoints-1;
 	umin = degree-1;
 	umax = totalControlPoints;

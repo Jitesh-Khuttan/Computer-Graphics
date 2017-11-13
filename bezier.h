@@ -14,7 +14,6 @@ class Bezier : public Object
 		int factorial(int number);
 	public:
 		int totalControlPoints;
-		vector<int> coefficients;
 		list< pair<int,int> > controlPoints;
 		
 		Bezier(GLubyte* color,int thickness,string pattern);
