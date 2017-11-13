@@ -8,6 +8,7 @@
 #include "circle.h"
 #include "ellipse.h"
 #include "bezier.h"
+#include "bspline.h"
 #include "cohensutherland.h"
 #include "liang.h"
 #include "pattern.h"
@@ -23,7 +24,7 @@ string CURRENTPATTERN = Pattern::HEX_15;
 int CURRENTTHICKNESS = Thickness::THICKNESS1;
 
 static int scaleSubMenu,thickSubMenu,mainMenu,patternSubMenu,colorSubMenu,angleSubMenu,
-fillMenus,fillSubMenu4,fillSubMenu8,ngonSubMenu,transformationSubMenu,drawingSubMenu,clipSubMenu,curveSubMenu,bezierSubMenu,fillSubMenuFlood;
+fillMenus,fillSubMenu4,fillSubMenu8,ngonSubMenu,transformationSubMenu,drawingSubMenu,clipSubMenu,curveSubMenu,fillSubMenuFlood,bsplineSubMenu;
 int currentAlgo = 0;
 
 int clipHeight=0,clipWidth=0,tempClipHeight,tempClipWidth;
@@ -32,6 +33,7 @@ bool clipWindowON = false;
 bool cohenLineClipAlgo=false,liangLineClipAlgo=false;
 int tempSX,tempSY,tempEX,tempEY;
 int rotationAngle=0;
+int degree = 2;
 int ngonRadius;
 pair<int,int> scalingValue;
 
@@ -222,6 +224,13 @@ void display()
 	{
 		Bezier *curve = new Bezier(CURRENTCOLOR,CURRENTTHICKNESS,CURRENTPATTERN);
 		curve->drawCurve(controlPoints);
+		allObjects.push_back(curve);
+	}
+	else if(currentAlgo == 75)
+	{
+		cout<<"\n\tCalling BSpline";
+		Bspline *curve = new Bspline(CURRENTCOLOR,CURRENTTHICKNESS,CURRENTPATTERN);
+		curve->drawCurve(controlPoints,degree);
 		allObjects.push_back(curve);
 	}
 	
@@ -641,7 +650,7 @@ void menuCallback(int value)
 		boundaryFill = false;
 		currentAlgo = value;
 	}
-	else if(value>=70 && value<=71)
+	else if(value>=70 && value<=75)
 	{
 		boundaryFill = false;
 		currentAlgo = value;
@@ -649,8 +658,15 @@ void menuCallback(int value)
 			controlPoints.clear();
 		else if(currentAlgo == 71)
 			display();
+		else if(currentAlgo == 72)
+			degree = 2;
+		else if(currentAlgo == 73)
+			degree = 3;
+		else if(currentAlgo == 74)
+			degree = 4;	
+		else if(currentAlgo == 75)
+			display();
 	}
-
 }
 
 void createMenu()
@@ -748,13 +764,16 @@ void createMenu()
 	glutAddSubMenu("8 Boundary Fill",fillSubMenu8);
 	glutAddSubMenu("Flood Fill",fillSubMenuFlood);
 	
-	bezierSubMenu = glutCreateMenu(menuCallback);
-	glutAddMenuEntry("Select Control Points",70);
-	glutAddMenuEntry("Draw Curve",71);
+	bsplineSubMenu = glutCreateMenu(menuCallback);
+	glutAddMenuEntry("degree = 2",72);
+	glutAddMenuEntry("degree = 3",73);
+	glutAddMenuEntry("degree = 4",74);
+	glutAddMenuEntry("Draw BSpline Curve",75);
 	
 	curveSubMenu = glutCreateMenu(menuCallback);
-	glutAddSubMenu("Bezier Curve",bezierSubMenu);
-	
+	glutAddMenuEntry("Select Control Points",70);
+	glutAddMenuEntry("Draw Bezier Curve",71);
+	glutAddSubMenu("Bspline Curve",bsplineSubMenu);
 	
 	mainMenu = glutCreateMenu(menuCallback);
 	glutAddSubMenu("Drawing Operations",drawingSubMenu);	
